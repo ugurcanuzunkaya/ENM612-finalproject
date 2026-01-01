@@ -102,7 +102,7 @@ Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-R
 | | **VNS-RPCF** | **1.0000** | 0.10 |
 | **WBCD** (Diagnosis) | r-PCF | 0.9883 | 0.05 |
 | | **VNS-RPCF** | 0.9591 | 1.08 |
-| **WBCP** (Prognostic)| r-PCF | **0.8000** | 0.01 |
+| **WBCP** (Prognostic) | r-PCF | **0.8000** | 0.01 |
 | | **VNS-RPCF** | 0.7833 | 0.24 |
 | **Heart** | r-PCF | **0.7912** | 0.03 |
 | | **VNS-RPCF** | 0.7802 | 0.53 |
