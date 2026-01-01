@@ -1,4 +1,3 @@
-import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, classification_report
 from src.visualizer import plot_decision_boundary
@@ -28,7 +27,7 @@ def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf,
         f.write(f"=== Detailed Results for Dataset: {ds_name} ===\n\n")
 
         # --- RPCF Section ---
-        f.write(f"--- Model: Standard RPCF ---\n")
+        f.write("--- Model: Standard RPCF ---\n")
         if rpcf_model and hasattr(rpcf_model, "functions"):
             y_pred = rpcf_model.predict(X_test)
             acc = accuracy_score(y_test, y_pred)
@@ -52,7 +51,7 @@ def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf,
         f.write("-" * 50 + "\n\n")
 
         # --- VNS-RPCF Section ---
-        f.write(f"--- Model: VNS-RPCF ---\n")
+        f.write("--- Model: VNS-RPCF ---\n")
         if vns_model and hasattr(vns_model, "functions"):
             y_pred = vns_model.predict(X_test)
             acc = accuracy_score(y_test, y_pred)

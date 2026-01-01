@@ -38,12 +38,10 @@ class RPCF:
         while len(A_indices) > 0:
             iteration += 1
 
-            # --- EXTENSION POINT: Center Selection ---
             self.current_A_indices = A_indices
             self.current_B_indices = B_indices
             center_idx = self.select_center(A_indices)
             center_a = X[center_idx]
-            # -----------------------------------------
 
             params = solve_subproblem_qk(
                 A_indices, B_indices, X, X, center_a, self.C, self.lamb
@@ -59,45 +57,18 @@ class RPCF:
             self.centers.append(center_a)
 
             # Evaluate to prune datasets
-            # Calculate g(x) for all remaining points in A
-            # Correctly classified A points have g(a) > 0 ?
-            # Wait, let's re-read the Separation Principle from prompt:
-            # "Cover Class -1 (Set A) with negative values... and Class +1 (Set B) with positive values."
-            # So A should be g(x) <= 0
-            # And B should be g(x) > 0
-
-            # Constraints in solver:
-            # Paper Eq 5b: g(x) + 1 <= y_i  => g(x) <= -1 + y_i.  Ideally g(x) <= -1 (negative)
-            # Paper Eq 5c: -g(x) + 1 <= z_j => g(x) >= 1 - z_j.   Ideally g(x) >= 1 (positive)
-
-            # So if we successfully classify a point in A, it means g(a) <= 0 (roughly).
-            # The prompt code logic says:
-            # "Remove points where g(a) <= 0 (Correctly classified as -1)"
-            # "Paper: I_{k+1} = {i : g(a) > 0}" -> Keep points where g(a) > 0 (Misclassified or not covered yet)
-
-            # Re-checking prompt code:
-            # keep_mask_A = g_vals_A > 0
-            # A_indices = np.array(A_indices)[keep_mask_A].tolist()
-            # This matches "Keep points where g(a) > 0".
-            # Because we want to cover A with negative values, so if g(a) <= 0 it is "covered/removed".
-
+            # For A: Keep points where g(a) > 0 (Misclassified/Not covered)
             g_vals_A = self._evaluate_g(
                 X[A_indices], params["w"], params["xi"], params["gamma"], center_a
             )
-            keep_mask_A = g_vals_A > 0  # Keep if POSITIVE (wrong for A)
+            keep_mask_A = g_vals_A > 0
             A_indices = np.array(A_indices)[keep_mask_A].tolist()
 
-            # For B:
-            # "Keep points where g(b) > 0 (Correctly classified as +1)"
-            # "If g(b) <= 0, it is misclassified... remove misclassified B points from constraint set"
-            # Prompt code:
-            # keep_mask_B = g_vals_B > 0
-            # B_indices = np.array(B_indices)[keep_mask_B].tolist()
-
+            # For B: Keep points where g(b) > 0 (Correctly classified)
             g_vals_B = self._evaluate_g(
                 X[B_indices], params["w"], params["xi"], params["gamma"], center_a
             )
-            keep_mask_B = g_vals_B > 0  # Keep if POSITIVE (correct for B)
+            keep_mask_B = g_vals_B > 0
             B_indices = np.array(B_indices)[keep_mask_B].tolist()
 
             print(
@@ -114,12 +85,6 @@ class RPCF:
 
         # g(x) = min(g_1, g_2, ... g_k)
         # Classify as -1 if min(g) <= 0, else 1
-        # Wait, if we want to separate A (negative) vs B (positive).
-        # If ANY function g_k(x) is negative, then x "falls into" that cone and is classified as A (-1).
-        # So taking min is correct logic for union of cones for A.
-        # If min(g) <= 0, it belongs to at least one cone -> Class A (-1).
-        # If min(g) > 0, it is outside all cones -> Class B (+1).
-
         g_matrix = np.zeros((len(X), len(self.functions)))
 
         for k, func in enumerate(self.functions):

@@ -1,4 +1,3 @@
-import numpy as np
 from sklearn.metrics import accuracy_score
 from src.rpcf import RPCF
 
@@ -14,7 +13,6 @@ def grid_search_rpcf(X_train, y_train, X_val, y_val):
     C_values = [0.1, 1, 10, 100]
     lamb_values = [0.01, 0.1, 1]
 
-    total_combs = len(C_values) * len(lamb_values)
     curr = 0
 
     for C in C_values:

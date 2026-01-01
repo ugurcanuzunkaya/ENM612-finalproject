@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from sklearn.datasets import make_moons, load_breast_cancer, make_blobs
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer

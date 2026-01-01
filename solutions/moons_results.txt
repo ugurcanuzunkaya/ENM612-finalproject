@@ -2,14 +2,14 @@
 
 --- Model: Standard RPCF ---
 Accuracy: 0.9833
-Training Time: 0.0123 seconds
+Training Time: 0.0119 seconds
 Number of Functions (Centers): 4
 
 Evaluation Metrics:
               precision    recall  f1-score   support
 
-          -1       0.97      1.00      0.98        30
-           1       1.00      0.97      0.98        30
+          -1       1.00      0.97      0.98        30
+           1       0.97      1.00      0.98        30
 
     accuracy                           0.98        60
    macro avg       0.98      0.98      0.98        60
@@ -17,39 +17,39 @@ weighted avg       0.98      0.98      0.98        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [0.35394701 0.88738793]
-    Weight (w): [ 0.54057613 -1.34414071]
-    Xi: 0.896703
+    Center: [0.58190706 0.67581977]
+    Weight (w): [ 0.74882476 -1.51494073]
+    Xi: 1.172912
     Gamma: 1.000000
-    QP Objective: 1.9698043807738936
+    QP Objective: 2.177743331235091
 
   Function 2:
     Center: [-1.56464566 -0.26504752]
-    Weight (w): [ 1.02233739e+00 -2.89395844e-04]
-    Xi: 0.582711
+    Weight (w): [1.00997374 0.01299311]
+    Xi: 0.595209
     Gamma: 1.000000
-    QP Objective: 2.355361102077434
+    QP Objective: 2.3128230997257417
 
   Function 3:
-    Center: [ 0.34879672 -0.02005095]
-    Weight (w): [-0.6710947  -0.15111044]
-    Xi: 1.786753
+    Center: [ 0.59785791 -0.26756332]
+    Weight (w): [-0.19925494 -0.60461117]
+    Xi: 1.724896
     Gamma: 1.000000
-    QP Objective: 1.4919464676205654
+    QP Objective: 1.3266968292033656
 
   Function 4:
-    Center: [ 0.75147607 -0.67350921]
-    Weight (w): [ 0.39125471 -0.8657625 ]
-    Xi: 2.312608
+    Center: [ 0.3474203  -0.66475946]
+    Weight (w): [-0.70356129 -0.38908762]
+    Xi: 2.423615
     Gamma: 1.000000
-    QP Objective: 1.3623808367412804
+    QP Objective: 1.3950307824676966
 
 --------------------------------------------------
 
 --- Model: VNS-RPCF ---
 Accuracy: 1.0000
-Training Time: 0.3675 seconds
-Number of Functions (Centers): 6
+Training Time: 0.2140 seconds
+Number of Functions (Centers): 4
 
 Evaluation Metrics:
               precision    recall  f1-score   support
@@ -63,44 +63,30 @@ weighted avg       1.00      1.00      1.00        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [0.53806458 0.10636029]
-    Weight (w): [-0.08975121 -1.50812189]
-    Xi: 1.623648
+    Center: [-1.59916179 -0.72017978]
+    Weight (w): [ 1.33926289 -0.78879428]
+    Xi: 0.550469
     Gamma: 1.000000
-    QP Objective: 3.205046089915755
+    QP Objective: 2.516427341270553
 
   Function 2:
-    Center: [ 0.49567348 -0.38744329]
-    Weight (w): [-0.07712585 -1.53286986]
-    Xi: 1.727591
+    Center: [-0.71363626  1.38496974]
+    Weight (w): [-0.14488952 -0.95838851]
+    Xi: 0.599489
     Gamma: 1.000000
-    QP Objective: 4.127551563168014
+    QP Objective: 1.9382269905758913
 
   Function 3:
-    Center: [-0.40848774  1.28658477]
-    Weight (w): [ 1.01801873 -1.67907412]
-    Xi: 0.096703
+    Center: [ 0.3474203  -0.66475946]
+    Weight (w): [-0.53358857 -2.20094532]
+    Xi: 2.197393
     Gamma: 1.000000
-    QP Objective: 1.526207741075791
+    QP Objective: 2.086626269633055
 
   Function 4:
-    Center: [-0.1451575   0.72311664]
-    Weight (w): [ 0.96383625 -1.58914913]
-    Xi: 0.242782
+    Center: [-0.30914929  0.79578003]
+    Weight (w): [-0.44568636 -1.20202902]
+    Xi: 1.480226
     Gamma: 1.000000
-    QP Objective: 3.9672706058583134
-
-  Function 5:
-    Center: [-1.59916179 -0.72017978]
-    Weight (w): [0.6402416 0.152412 ]
-    Xi: 0.742008
-    Gamma: 1.000000
-    QP Objective: 2.002206242949983
-
-  Function 6:
-    Center: [ 0.3474203  -0.66475946]
-    Weight (w): [-0.70451149 -0.43736711]
-    Xi: 2.422459
-    Gamma: 1.000000
-    QP Objective: 1.4372770465002054
+    QP Objective: 0.8738057295009775
 

@@ -94,28 +94,30 @@ Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-R
 
 | Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) |
 | :--- | :--- | :--- | :--- |
+| Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) |
+| :--- | :--- | :--- | :--- |
 | **Moons** | r-PCF | 0.9833 | 0.01 |
-| | **VNS-RPCF** | **1.0000** | 0.37 |
+| | **VNS-RPCF** | **1.0000** | 0.21 |
 | **Breast Cancer** (Sklearn) | r-PCF | 0.9415 | 0.08 |
-| | **VNS-RPCF** | **0.9474** | 1.19 |
-| **Blobs 3D** | r-PCF | 1.0000 | 0.01 |
-| | **VNS-RPCF** | **1.0000** | 0.11 |
-| **WBCD** (Diagnosis) | r-PCF | 0.9766 | 0.06 |
-| | **VNS-RPCF** | **0.9825** | 0.96 |
-| **WBCP** (Prognostic)| r-PCF | **0.7667** | 0.01 |
-| | **VNS-RPCF** | 0.7500 | 0.28 |
-| **Heart** | r-PCF | 0.6923 | 0.27 |
-| | **VNS-RPCF** | **0.7253** | 3.87 |
-| **Votes** | r-PCF | **0.9466** | 0.04 |
-| | **VNS-RPCF** | **0.9466** | 0.67 |
-| **Ionosphere** | r-PCF | 0.9151 | 0.15 |
-| | **VNS-RPCF** | **0.9245** | 1.69 |
-| **Liver** | r-PCF | **0.9327** | 0.13 |
-| | **VNS-RPCF** | 0.9231 | 1.46 |
+| | **VNS-RPCF** | 0.9298 | 1.41 |
+| **Blobs 3D** | r-PCF | 1.0000 | 0.00 |
+| | **VNS-RPCF** | **1.0000** | 0.10 |
+| **WBCD** (Diagnosis) | r-PCF | 0.9883 | 0.05 |
+| | **VNS-RPCF** | 0.9591 | 1.08 |
+| **WBCP** (Prognostic)| r-PCF | **0.8000** | 0.01 |
+| | **VNS-RPCF** | 0.7833 | 0.24 |
+| **Heart** | r-PCF | **0.7912** | 0.03 |
+| | **VNS-RPCF** | 0.7802 | 0.53 |
+| **Votes** | r-PCF | **0.9542** | 0.04 |
+| | **VNS-RPCF** | 0.9389 | 0.49 |
+| **Ionosphere** | r-PCF | 0.8868 | 0.18 |
+| | **VNS-RPCF** | **0.8962** | 2.08 |
+| **Liver** | r-PCF | 0.9327 | 0.12 |
+| | **VNS-RPCF** | **0.9615** | 1.71 |
 
 ### Yorumlar
 
-1. **Doğruluk Artışı**: `Heart`, `WBCD`, `Ionosphere` gibi gürültülü veya karmaşık karar sınırlarına sahip veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk oranlarına ulaşmıştır. Özellikle `Heart` veri setinde yaklaşık **%3.3**'lük bir başarı artışı (0.69 -> 0.72) gözlemlenmiştir. Bu durum, VNS'in yerel arama stratejisinin daha "derin" ve kapsayıcı konik fonksiyonlar bulduğunu doğrular.
+1. **Doğruluk Artışı**: `Liver` ve `Ionosphere` gibi gürültülü veya karmaşık karar sınırlarına sahip veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk oranlarına ulaşmıştır. Özellikle `Liver` veri setinde yaklaşık **%3**'lük bir başarı artışı (0.93 -> 0.96) gözlemlenmiştir. Bu durum, VNS'in yerel arama stratejisinin daha "derin" ve kapsayıcı konik fonksiyonlar bulduğunu doğrular.
 2. **Süre Maliyeti**: VNS-RPCF, her iterasyonda optimum merkezi bulmak için komşuluk araması yaptığından eğitim süresi standart r-PCF'e göre belirgin şekilde uzundur. Bu beklenen bir trade-off (ödünleşim) durumudur.
 3. **Model Sadeliği**: Her iki algoritma da oldukça az sayıda "merkez" (konik fonksiyon) kullanarak veriyi sınıflandırmayı başarmıştır. Örneğin 3 boyutta %100 ayrım için tek bir koni yeterli olmuştur. Bu, modelin "Sparse" (seyrek) ve yorumlanabilir olduğunu gösterir.
 

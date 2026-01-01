@@ -21,7 +21,7 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
     """
     m_sub = len(A_indices)
     p_sub = len(B_indices)
-    # Fix 1: Only stop if A is empty. If B is empty, we continue (unconstrained by B).
+    # If A is empty, we stop (Set A is fully covered).
     if m_sub == 0:
         return None
 
@@ -29,15 +29,14 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
 
     try:
         model = gp.Model("Q_k")
-        model.setParam("OutputFlag", 0)  # Silent mode
+        model.setParam("OutputFlag", 0)
 
         # Variables
         w = model.addVars(n_features, lb=-GRB.INFINITY, name="w")
         xi = model.addVar(lb=0.0, name="xi")
         gamma = model.addVar(lb=1.0, name="gamma")
-        y_slack = model.addVars(m_sub, lb=0.0, name="y")  # Slacks for A
+        y_slack = model.addVars(m_sub, lb=0.0, name="y")
 
-        # Only create z_slack if B is not empty
         if p_sub > 0:
             z_slack = model.addVars(p_sub, lb=0.0, name="z")
 
@@ -62,7 +61,6 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
                 term1.addTerms(diff, [w[j] for j in range(n_features)])
 
                 l1_norm = np.sum(np.abs(diff))
-                # Note: -term1 - ... is equivalent to -1*(term1 + ...)
                 model.addConstr(
                     -1 * term1 - l1_norm * xi + gamma + 1 <= z_slack[idx_enum]
                 )
@@ -71,8 +69,7 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
         w_sq = gp.quicksum(w[j] * w[j] for j in range(n_features))
         reg_term = w_sq + xi * xi + gamma * gamma
 
-        # Fix 2: Normalization Weights (1/m for A, C/p for B)
-        # If p_sub is 0, weight_B is 0.
+        # Normalization Weights (1/m for A, C/p for B)
         weight_A = 1.0 / m_sub if m_sub > 0 else 0.0
         weight_B = C / p_sub if p_sub > 0 else 0.0
 

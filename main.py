@@ -58,7 +58,7 @@ def run_all_benchmarks():
             )
 
         # --- Grid Search (Optional but recommended) ---
-        print(f"  > Performing Grid Search...")
+        print("  > Performing Grid Search...")
         # Split train again for val? Or just use CV?
         # For simplicity/speed, we use a fixed validation split from X_train
         try:
@@ -93,7 +93,7 @@ def run_all_benchmarks():
             )
 
         # --- VNS RPCF ---
-        print(f"  > Training VNS-RPCF (Optimized)..")
+        print("  > Training VNS-RPCF (Optimized)..")
         start = time.time()
         # Using same optimal parameters as RPCF for fair comparison?
         # Or should VNS have its own? Usually same.
