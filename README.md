@@ -94,8 +94,6 @@ Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-R
 
 | Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) |
 | :--- | :--- | :--- | :--- |
-| Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) |
-| :--- | :--- | :--- | :--- |
 | **Moons** | r-PCF | 0.9833 | 0.01 |
 | | **VNS-RPCF** | **1.0000** | 0.21 |
 | **Breast Cancer** (Sklearn) | r-PCF | 0.9415 | 0.08 |
@@ -117,7 +115,7 @@ Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-R
 
 ### Yorumlar
 
-1. **Doğruluk Artışı**: `Liver` ve `Ionosphere` gibi gürültülü veya karmaşık karar sınırlarına sahip veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk oranlarına ulaşmıştır. Özellikle `Liver` veri setinde yaklaşık **%3**'lük bir başarı artışı (0.93 -> 0.96) gözlemlenmiştir. Bu durum, VNS'in yerel arama stratejisinin daha "derin" ve kapsayıcı konik fonksiyonlar bulduğunu doğrular.
+1. **Doğruluk Artışı**: `Liver`, `Ionosphere` ve `Moons` veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk sağlamıştır. Özellikle `Liver` veri setinde yaklaşık **%3**'lük bir artış (0.93 -> 0.96) görülmüştür. Ancak `Heart` ve `WBCD` gibi bazı setlerde standart yöntem benzer veya biraz daha iyi sonuçlar vermiştir; bu durum VNS'in stokastik yapısından ve hiperparametre ayarlarının (Grid Search aralığı) hassasiyetinden kaynaklanabilir.
 2. **Süre Maliyeti**: VNS-RPCF, her iterasyonda optimum merkezi bulmak için komşuluk araması yaptığından eğitim süresi standart r-PCF'e göre belirgin şekilde uzundur. Bu beklenen bir trade-off (ödünleşim) durumudur.
 3. **Model Sadeliği**: Her iki algoritma da oldukça az sayıda "merkez" (konik fonksiyon) kullanarak veriyi sınıflandırmayı başarmıştır. Örneğin 3 boyutta %100 ayrım için tek bir koni yeterli olmuştur. Bu, modelin "Sparse" (seyrek) ve yorumlanabilir olduğunu gösterir.
 
