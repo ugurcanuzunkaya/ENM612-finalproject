@@ -5,10 +5,13 @@ import numpy as np
 
 
 class VNS_RPCF(RPCF):
-    def __init__(self, C=1.0, lamb=0.01, k_neighbors=10, max_vns_iter=5):
+    def __init__(
+        self, C=1.0, lamb=0.01, k_neighbors=10, max_vns_iter=5, max_neighbors_check=5
+    ):
         super().__init__(C, lamb)
         self.k_neighbors = k_neighbors
         self.max_vns_iter = max_vns_iter
+        self.max_neighbors_check = max_neighbors_check
 
     def select_center(self, candidates_indices):
         """
@@ -72,7 +75,12 @@ class VNS_RPCF(RPCF):
 
             # Check neighbors
             improved = False
+            checked_count = 0
             for n_int_idx in neighbor_internal_indices:
+                if checked_count >= self.max_neighbors_check:
+                    break
+                checked_count += 1
+
                 n_full_idx = candidates_indices[n_int_idx]
 
                 # Verify if we should test this neighbor (skip if same as current)

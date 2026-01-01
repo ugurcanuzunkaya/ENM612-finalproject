@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from src.dataloader import DatasetLoader
 from src.rpcf import RPCF
 from src.vns_rpcf import VNS_RPCF
+from src.grid_search import grid_search_rpcf
 from src.utils import plot_and_save, save_dataset_results
 
 
@@ -56,10 +57,26 @@ def run_all_benchmarks():
                 X, y, test_size=0.3, random_state=42
             )
 
+        # --- Grid Search (Optional but recommended) ---
+        print(f"  > Performing Grid Search...")
+        # Split train again for val? Or just use CV?
+        # For simplicity/speed, we use a fixed validation split from X_train
+        try:
+            X_t, X_v, y_t, y_v = train_test_split(
+                X_train, y_train, test_size=0.2, random_state=42
+            )
+            best_params = grid_search_rpcf(X_t, y_t, X_v, y_v)
+            print(f"    Best Params: {best_params}")
+            C_opt = best_params["C"]
+            lamb_opt = best_params["lamb"]
+        except Exception as e:
+            print(f"    Grid Search Failed: {e}. Using defaults.")
+            C_opt, lamb_opt = 10.0, 0.01
+
         # --- Standard RPCF ---
-        print(f"  > Training Standard RPCF...")
+        print(f"  > Training Standard RPCF (C={C_opt}, lamb={lamb_opt})...")
         start = time.time()
-        rpcf = RPCF(C=10.0, lamb=0.01)
+        rpcf = RPCF(C=C_opt, lamb=lamb_opt)
         try:
             rpcf.fit(X_train, y_train)
             t_rpcf = time.time() - start
@@ -76,9 +93,17 @@ def run_all_benchmarks():
             )
 
         # --- VNS RPCF ---
-        print(f"  > Training VNS-RPCF (Optimized)...")
+        print(f"  > Training VNS-RPCF (Optimized)..")
         start = time.time()
-        vns_rpcf = VNS_RPCF(C=10.0, lamb=0.01, k_neighbors=20, max_vns_iter=5)
+        # Using same optimal parameters as RPCF for fair comparison?
+        # Or should VNS have its own? Usually same.
+        vns_rpcf = VNS_RPCF(
+            C=C_opt,
+            lamb=lamb_opt,
+            k_neighbors=20,
+            max_vns_iter=5,
+            max_neighbors_check=5,
+        )
         try:
             vns_rpcf.fit(X_train, y_train)
             t_vns = time.time() - start

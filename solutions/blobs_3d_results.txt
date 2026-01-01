@@ -2,7 +2,7 @@
 
 --- Model: Standard RPCF ---
 Accuracy: 1.0000
-Training Time: 0.0059 seconds
+Training Time: 0.0066 seconds
 Number of Functions (Centers): 1
 
 Evaluation Metrics:
@@ -17,17 +17,17 @@ weighted avg       1.00      1.00      1.00        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [-0.85720505  0.77531948  0.67774856]
-    Weight (w): [ 0.07798072 -0.37106474 -0.43219703]
-    Xi: 0.149142
-    Gamma: 1.000000
-    QP Objective: 0.013528076811749112
+    Center: [-1.05529912  0.83777263  0.89987698]
+    Weight (w): [-0.0105155  -0.34153577 -0.24643379]
+    Xi: 0.225839
+    Gamma: 1.151423
+    QP Objective: 0.016201505123218773
 
 --------------------------------------------------
 
 --- Model: VNS-RPCF ---
 Accuracy: 1.0000
-Training Time: 0.4298 seconds
+Training Time: 0.1085 seconds
 Number of Functions (Centers): 1
 
 Evaluation Metrics:
@@ -42,9 +42,9 @@ weighted avg       1.00      1.00      1.00        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [-0.92375116  1.30563287  0.65350563]
-    Weight (w): [ 0.0500163  -0.01037359 -0.5875525 ]
-    Xi: 0.232077
-    Gamma: 1.138729
-    QP Objective: 0.016983903467776493
+    Center: [-1.3023851   0.94503969  1.09878666]
+    Weight (w): [-0.11403372 -0.32395382 -0.10267878]
+    Xi: 0.297101
+    Gamma: 1.282449
+    QP Objective: 0.02073528515991792
 

@@ -35,7 +35,7 @@ class RPCF:
         # The prompt code says: "In r-PCF, we remove misclassified B points from the constraint set for future iterations"
 
         iteration = 0
-        while len(A_indices) > 0 and len(B_indices) > 0:
+        while len(A_indices) > 0:
             iteration += 1
 
             # --- EXTENSION POINT: Center Selection ---
