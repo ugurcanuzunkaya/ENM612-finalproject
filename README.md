@@ -1,8 +1,8 @@
-# Gözden Geçirilmiş Çokyüzlü Konik Fonksiyonlar (r-PCF) ve VNS İyileştirmesi
+# Revised Polyhedral Conic Functions (r-PCF) ve VNS İyileştirmesi
 
 ## Proje Hedefi
 
-Bu proje, ENM612 dönem projesi kapsamında, ikili sınıflandırma (binary classification) problemleri için geliştirilen **r-PCF (Revised Polyhedral Conic Functions)** algoritmasını uygulamayı ve bu algoritmayı **Değişken Komşuluk Arama (Variable Neighborhood Search - VNS)** meta-sezgiseli ile geliştirmeyi amaçlar.
+Bu proje, ENM612 final projesi kapsamında, ikili sınıflandırma (binary classification) problemleri için geliştirilen **r-PCF (Revised Polyhedral Conic Functions)** algoritmasını uygulamayı ve bu algoritmayı **Değişken Komşuluk Arama (Variable Neighborhood Search - VNS)** meta-sezgiseli ile geliştirmeyi amaçlar.
 
 Temel hedef, sınıflandırma doğruluğunu yüksek tutarken, veri setini ayırmak için gereken konik fonksiyon (merkez) sayısını minimize etmektir. Proje, orijinal makaledeki yöntemleri Python ve Gurobi Optimizasyon Çözücüsü kullanarak yeniden üretir ve geliştirir.
 
