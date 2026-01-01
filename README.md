@@ -8,7 +8,7 @@ Temel hedef, sınıflandırma doğruluğunu yüksek tutarken, veri setini ayırm
 
 ## Özellikler
 
-* **r-PCF Algoritması**: İteratif "cookie cutter" (kurabiye kalıbı) mantığıyla çalışan, matematiksel programlama tabanlı sınıflandırma.
+* **r-PCF Algoritması**: İteratif "cookie cutter" mantığıyla çalışan, matematiksel programlama tabanlı sınıflandırma.
 * **VNS-RPCF (Geliştirilmiş Model)**: Rastgele merkez seçimi yerine, VNS kullanarak en iyi ayrımı yapacak merkezi arayan hibrit algoritma.
 * **Kapsamlı Veri Desteği**: `DatasetLoader` modülü sayesinde 9 farklı veri seti üzerinde (Moons, Ionosphere, Breast Cancer, vb.) otomatik test imkanı.
 * **Otomatik Eksik Veri Tamamlama**: Eksik veri içeren veri setleri (örn. WBCP) için otomatik `imputation` işlemi.
@@ -33,7 +33,7 @@ Proje aşağıdaki veri setlerini `src/dataloader.py` üzerinden otomatik olarak
 
 ### Ön Gereksinimler
 
-* **Python 3.10+**
+* **Python 3.12+**
 * **Gurobi Lisansı**: Kodun çalışması için sisteminizde geçerli bir `gurobi.lic` dosyası bulunmalıdır (Akademik lisans önerilir).
 
 ### Seçenek 1: `uv` ile Kurulum (Önerilen)
@@ -122,7 +122,3 @@ Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-R
 ### Sonuç
 
 VNS entegrasyonu, hesaplama maliyetini artırmakla birlikte, özellikle zorlu sınıflandırma problemlerinde modelin genelleme yeteneğini ve doğruluğunu artırmak için etkili bir yöntemdir. Basit veri setlerinde ise standart r-PCF hız avantajı nedeniyle tercih edilebilir.
-
-## Yazar & Referans
-
-Bu uygulama, *kademeli yapıcı (incremental constructive)* öğrenme algoritmaları ve *matematiksel programlama* prensipleri kullanılarak hazırlanmıştır.
