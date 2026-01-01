@@ -1,0 +1,6 @@
+gurobipy
+numpy
+pandas
+scikit-learn
+matplotlib
+ucimlrepo
