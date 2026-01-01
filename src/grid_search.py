@@ -4,7 +4,15 @@ from src.rpcf import RPCF
 
 def grid_search_rpcf(X_train, y_train, X_val, y_val):
     """
-    Performs grid search to find best C and lambda parameters.
+    Performs a simple grid search to find the best hyperparameters (C, lambda)
+    for the r-PCF model on a validation set.
+
+    Args:
+        X_train, y_train: Training data
+        X_val, y_val: Validation data
+
+    Returns:
+        dict: A dictionary containing the best 'C' and 'lamb' values found.
     """
     best_acc = -1.0
     best_params = {"C": 1.0, "lamb": 0.01}
@@ -18,7 +26,6 @@ def grid_search_rpcf(X_train, y_train, X_val, y_val):
     for C in C_values:
         for lamb in lamb_values:
             curr += 1
-            # print(f"  Grid Search {curr}/{total_combs}: C={C}, lamb={lamb}...", end="\r")
 
             try:
                 model = RPCF(C=C, lamb=lamb)

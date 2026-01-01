@@ -1,3 +1,11 @@
+"""
+Main execution script for r-PCF and VNS-RPCF Benchmarks.
+
+This script runs a comprehensive benchmark comparing the standard r-PCF algorithm
+with the VNS-enhanced version across multiple UCI datasets. It handles data loading,
+preprocessing, grid search for hyperparameter tuning, training, and result reporting.
+"""
+
 import time
 import os
 import numpy as np
@@ -37,29 +45,28 @@ def run_all_benchmarks():
             print(f"Error loading {ds_name}: {e}")
             continue
 
-        # Preprocessing: Ensure labels are -1 and 1
+        # Ensure binary labels are mapped to {-1, +1} for the algorithm
         uniques = np.unique(y)
         if set(uniques) == {0, 1}:
             y = np.where(y == 0, -1, 1)
         elif -1 not in uniques:
-            # If labels are not 0/1, map magnitude-wise or just assume min is -1
+            # Fallback: map the minimum value to -1, others to 1
             min_val = np.min(uniques)
             y = np.where(y == min_val, -1, 1)
 
-        # Stratified Split
+        # Split data into Training and Test sets (Stratified)
         try:
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.3, stratify=y, random_state=42
             )
         except ValueError:
-            # Fallback for small class counts
+            # Fallback for datasets with very small class counts where stratification fails
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.3, random_state=42
             )
 
-        # --- Grid Search (Optional but recommended) ---
+        # --- Grid Search for Hyperparameters ---
         print("  > Performing Grid Search...")
-        # Split train again for val? Or just use CV?
         # For simplicity/speed, we use a fixed validation split from X_train
         try:
             X_t, X_v, y_t, y_v = train_test_split(
@@ -95,8 +102,6 @@ def run_all_benchmarks():
         # --- VNS RPCF ---
         print("  > Training VNS-RPCF (Optimized)..")
         start = time.time()
-        # Using same optimal parameters as RPCF for fair comparison?
-        # Or should VNS have its own? Usually same.
         vns_rpcf = VNS_RPCF(
             C=C_opt,
             lamb=lamb_opt,

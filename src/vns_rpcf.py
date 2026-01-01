@@ -5,6 +5,15 @@ import numpy as np
 
 
 class VNS_RPCF(RPCF):
+    """
+    VNS-RPCF: Variable Neighborhood Search enhanced r-PCF.
+
+    This class extends the minimal r-PCF algorithm by replacing the random center
+    selection strategy with a meta-heuristic search (VNS). It attempts to find
+    an optimal center 'a' that maximizes the separation efficiency (volume of A removed)
+    in each iteration.
+    """
+
     def __init__(
         self, C=1.0, lamb=0.01, k_neighbors=10, max_vns_iter=5, max_neighbors_check=5
     ):
@@ -15,8 +24,7 @@ class VNS_RPCF(RPCF):
 
     def select_center(self, candidates_indices):
         """
-        Overrides the random selection with VNS.
-        We want to find a center 'a' that maximizes separation efficiency.
+        Selects the best center using Variable Neighborhood Search (VNS).
         """
         # candidates_indices is a list of valid indices in self.A_full
 
@@ -66,7 +74,7 @@ class VNS_RPCF(RPCF):
                 # Solve QP
                 center_candidate = self.A_full[n_full_idx]
 
-                # To save time, we might sample B? Project Requirement doesn't mention sampling.
+                # Solve QP
                 params = solve_subproblem_qk(
                     candidates_indices,
                     current_B_indices,

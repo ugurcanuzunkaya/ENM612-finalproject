@@ -3,16 +3,28 @@ from src.solvers import solve_subproblem_qk
 
 
 class RPCF:
+    """
+    Revised Polyhedral Conic Functions (r-PCF) Algorithm.
+
+    This algorithm constructs a classification model by iteratively adding
+    polyhedral conic functions to separate class -1 (Set A) from class +1 (Set B).
+    It uses a "cookie-cutter" approach where correctly classified points from A are
+    removed in each iteration until A is empty (or max iterations reached).
+    """
+
     def __init__(self, C=1.0, lamb=0.01):
         self.C = C
         self.lamb = lamb
-        self.functions = []  # List of dicts
+        self.functions = []  # List of learned conic functions
         self.centers = []
         self.A_full = None
         self.B_full = None
 
     def _evaluate_g(self, X, w, xi, gamma, center):
-        # g(x) = w'(x-a) + xi*||x-a||_1 - gamma
+        """
+        Calculates the value of the conic function g(x).
+        g(x) = w'(x-a) + xi*||x-a||_1 - gamma
+        """
         diff = X - center
         term1 = np.dot(diff, w)
         term2 = xi * np.sum(np.abs(diff), axis=1)
@@ -25,14 +37,12 @@ class RPCF:
         B_indices = np.where(y == 1)[0].tolist()
 
         self.A_full = X
-        self.B_full = X  # Just a reference to X really, could be cleaner
+        self.B_full = X
 
-        # We need to keep track of full X indices for B as well?
-        # In r-PCF, B is the set of +1 points. We want to separate A from B.
-        # We remove points from A that are correctly classified (g(a) > 0).
-        # We assume B is largely kept, but we might remove misclassified B's from constraints
-        # to prevent infeasibility or just keep them all?
-        # The prompt code says: "In r-PCF, we remove misclassified B points from the constraint set for future iterations"
+        # Iteratively separate class A from class B.
+        # Ideally, we want to find a set of cones whose intersection classifies B correctly
+        # and excludes A. In the constructive approach, we remove points from A that are
+        # "cut" (correctly classified as outside the current cone) in each step.
 
         iteration = 0
         while len(A_indices) > 0:

@@ -1,3 +1,11 @@
+"""
+Data Loading Module.
+
+This module is responsible for fetching, loading, and preprocessing various datasets
+from sklearn and the UCI Machine Learning Repository. It handles normalization (StandardScaler)
+and label encoding to ensure compatibility with the r-PCF text.
+"""
+
 import numpy as np
 from sklearn.datasets import make_moons, load_breast_cancer, make_blobs
 from sklearn.preprocessing import StandardScaler, LabelEncoder
@@ -11,7 +19,8 @@ except ImportError:
 
 class DatasetLoader:
     """
-    Handles loading and preprocessing of datasets.
+    Centralized handler for loading and preprocessing datasets.
+    Supports both synthetic (sklearn) and real-world (UCI) datasets.
     """
 
     def __init__(self):
@@ -39,11 +48,9 @@ class DatasetLoader:
             return self.load_votes()
         elif dataset_name == "ionosphere":
             return self.load_ionosphere()
-        elif dataset_name == "custom":
-            return self.load_custom_dataset()
         else:
             raise ValueError(
-                f"Dataset '{dataset_name}' not found. Available: moons, breast_cancer, blobs_3d, wbcd, wbcp, heart, liver, votes, ionosphere, custom"
+                f"Dataset '{dataset_name}' not found. Available: moons, breast_cancer, blobs_3d, wbcd, wbcp, heart, liver, votes, ionosphere"
             )
 
     def load_moons(self):

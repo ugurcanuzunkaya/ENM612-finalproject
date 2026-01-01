@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+
+# Tools
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Project Specific
+# Ignore downloaded data but keep the directory structure
+data/*
+!data/.gitkeep
+
+# Ignore outputs
+solutions/
+
+# Gurobi
+gurobi.log
+*.lp
+*.sol
+*.gurobi.lic

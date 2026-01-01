@@ -40,7 +40,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
         if p_sub > 0:
             z_slack = model.addVars(p_sub, lb=0.0, name="z")
 
-        # Constraint: g(x) + 1 <= y_i
+        # Constraint 1: g(x) >= 0 (strictly > -1 in formulation with slack) for x in A
+        # Formally: g(a_i) + 1 <= y_i  --> misclassified if y_i > 0
         for idx_enum, original_idx in enumerate(A_indices):
             point = A_full[original_idx]
             diff = point - center_a
@@ -51,7 +52,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
             l1_norm = np.sum(np.abs(diff))
             model.addConstr(term1 + l1_norm * xi - gamma + 1 <= y_slack[idx_enum])
 
-        # Constraint: -g(x) + 1 <= z_j (Only if B exists)
+        # Constraint 2: g(x) <= 0 (strictly < 1) for x in B
+        # Formally: -g(b_j) + 1 <= z_j --> misclassified if z_j > 0
         if p_sub > 0:
             for idx_enum, original_idx in enumerate(B_indices):
                 point = B_full[original_idx]
@@ -65,7 +67,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
                     -1 * term1 - l1_norm * xi + gamma + 1 <= z_slack[idx_enum]
                 )
 
-        # Objective: lambda * (||w||^2 + xi^2 + gamma^2) + sum(y) + C * sum(z)
+        # Objective: Min lambda*(||w||^2 + xi^2 + gamma^2) + 1/m * sum(y) + C/p * sum(z)
+        # We minimize the regularization term plus the weighted classification errors.
         w_sq = gp.quicksum(w[j] * w[j] for j in range(n_features))
         reg_term = w_sq + xi * xi + gamma * gamma
 
