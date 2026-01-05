@@ -90,35 +90,36 @@ Standart Python ortamı için:
 
 ## Sonuçlar ve Değerlendirme
 
-Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-RPCF** algoritmalarının performans karşılaştırmasını göstermektedir.
+Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-RPCF** algoritmalarının performans karşılaştırmasını göstermektedir. (Sonuçlar `np.random.seed(42)` ile alınmıştır).
 
-| Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) |
-| :--- | :--- | :--- | :--- |
-| **Moons** | r-PCF | 0.9833 | 0.01 |
-| | **VNS-RPCF** | **1.0000** | 0.21 |
-| **Breast Cancer** (Sklearn) | r-PCF | 0.9415 | 0.08 |
-| | **VNS-RPCF** | 0.9298 | 1.41 |
-| **Blobs 3D** | r-PCF | 1.0000 | 0.00 |
-| | **VNS-RPCF** | **1.0000** | 0.10 |
-| **WBCD** (Diagnosis) | r-PCF | 0.9883 | 0.05 |
-| | **VNS-RPCF** | 0.9591 | 1.08 |
-| **WBCP** (Prognostic) | r-PCF | **0.8000** | 0.01 |
-| | **VNS-RPCF** | 0.7833 | 0.24 |
-| **Heart** | r-PCF | **0.7912** | 0.03 |
-| | **VNS-RPCF** | 0.7802 | 0.53 |
-| **Votes** | r-PCF | **0.9542** | 0.04 |
-| | **VNS-RPCF** | 0.9389 | 0.49 |
-| **Ionosphere** | r-PCF | 0.8868 | 0.18 |
-| | **VNS-RPCF** | **0.8962** | 2.08 |
-| **Liver** | r-PCF | 0.9327 | 0.12 |
-| | **VNS-RPCF** | **0.9615** | 1.71 |
+| Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) | Fonksiyon Sayısı |
+| :--- | :--- | :--- | :--- | :--- |
+| **Moons** | r-PCF | 0.9833 | 0.0156 | 5 |
+| | **VNS-RPCF** | **1.0000** | 0.3206 | 6 |
+| **Breast Cancer** (Sklearn) | r-PCF | **0.9649** | 0.0971 | 2 |
+| | **VNS-RPCF** | 0.9357 | 1.5493 | 3 |
+| **Blobs 3D** | r-PCF | 1.0000 | 0.0064 | 1 |
+| | **VNS-RPCF** | 1.0000 | 0.1123 | 1 |
+| **WBCD** (Diagnosis) | r-PCF | 0.9357 | 0.123 | 4 |
+| | **VNS-RPCF** | **0.9474** | 1.4736 | 3 |
+| **WBCP** (Prognostic) | r-PCF | 0.7833 | 0.015 | 3 |
+| | **VNS-RPCF** | 0.7833 | 0.2705 | 3 |
+| **Heart** | r-PCF | 0.7692 | 0.0302 | 3 |
+| | **VNS-RPCF** | **0.7802** | 0.3684 | 3 |
+| **Votes** | r-PCF | 0.9618 | 0.0875 | 11 |
+| | **VNS-RPCF** | 0.9618 | 1.0907 | **5** |
+| **Ionosphere** | r-PCF | 0.9151 | 0.1299 | 5 |
+| | **VNS-RPCF** | **0.9528** | 1.5615 | 5 |
+| **Liver** | r-PCF | 0.9038 | 0.1042 | 4 |
+| | **VNS-RPCF** | **0.9615** | 1.5208 | 4 |
 
 ### Yorumlar
 
-1. **Doğruluk Artışı**: `Liver`, `Ionosphere` ve `Moons` veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk sağlamıştır. Özellikle `Liver` veri setinde yaklaşık **%3**'lük bir artış (0.93 -> 0.96) görülmüştür. Ancak `Heart` ve `WBCD` gibi bazı setlerde standart yöntem benzer veya biraz daha iyi sonuçlar vermiştir; bu durum VNS'in stokastik yapısından ve hiperparametre ayarlarının (Grid Search aralığı) hassasiyetinden kaynaklanabilir.
-2. **Süre Maliyeti**: VNS-RPCF, her iterasyonda optimum merkezi bulmak için komşuluk araması yaptığından eğitim süresi standart r-PCF'e göre belirgin şekilde uzundur. Bu beklenen bir trade-off (ödünleşim) durumudur.
-3. **Model Sadeliği**: Her iki algoritma da oldukça az sayıda "merkez" (konik fonksiyon) kullanarak veriyi sınıflandırmayı başarmıştır. Örneğin 3 boyutta %100 ayrım için tek bir koni yeterli olmuştur. Bu, modelin "Sparse" (seyrek) ve yorumlanabilir olduğunu gösterir.
+1. **Doğruluk Artışı**: `Liver`, `Ionosphere`, `Moons`, `WBCD` ve `Heart` veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk sağlamıştır. Özellikle `Liver` veri setinde yaklaşık **%6**'lık (0.90 -> 0.96) ve `Ionosphere` setinde **%4**'lük belirgin bir artış görülmüştür.
+2. **Model Sadeliği**: `Votes` veri setinde her iki algoritma aynı doğruluğu (0.9618) yakalamış olsa da, **VNS-RPCF** bu sonuca sadece **5** konik fonksiyon ile ulaşırken, standart r-PCF **11** fonksiyon kullanmıştır. Bu durum, VNS'in daha sade (sparse) ve daha iyi genelleme yapan modeller bulabildiğini gösterir. Aynı şekilde `WBCD` setinde de daha az merkez ile daha yüksek doğruluk elde edilmiştir.
+3. **Süre Maliyeti**: VNS-RPCF, her iterasyonda optimum merkezi bulmak için komşuluk araması yaptığından eğitim süresi standart r-PCF'e göre daha uzundur. Ancak karmaşık problemler ve daha sade modeller için bu maliyet kabul edilebilir düzeydedir.
+4. **Tutarlılık**: `Blobs 3D` ve `WBCP` gibi setlerde her iki algoritma da benzer sonuçlar üretmiştir, bu da VNS'in temel algoritmanın kararlılığını bozmadığını gösterir.
 
 ### Sonuç
 
-VNS entegrasyonu, hesaplama maliyetini artırmakla birlikte, özellikle zorlu sınıflandırma problemlerinde modelin genelleme yeteneğini ve doğruluğunu artırmak için etkili bir yöntemdir. Basit veri setlerinde ise standart r-PCF hız avantajı nedeniyle tercih edilebilir.
+VNS entegrasyonu, hesaplama maliyetini bir miktar artırmakla birlikte, modelin sınıflandırma doğruluğunu artırma (Liver, Ionosphere) ve model karmaşıklığını azaltma (Votes) konularında standart r-PCF'e göre üstünlük sağlamaktadır. Özellikle zorlu ve gürültülü veri setlerinde VNS-RPCF tercih edilmelidir.

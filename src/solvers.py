@@ -5,23 +5,23 @@ import numpy as np
 
 def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb):
     """
-    Solves the QP subproblem for a given center.
+    Belirli bir merkez için QP alt problemini çözer.
 
     Args:
-        A_indices: Current active indices for Set A (Class -1)
-        B_indices: Current active indices for Set B (Class +1)
-        A_full: Full dataset A (Class -1)
-        B_full: Full dataset B (Class +1)
-        center_a: The chosen center point (from A)
-        C: Hyperparameter for misclassification penalty
-        lamb: Hyperparameter for regularization
+        A_indices: A Kümesi (Sınıf -1) için mevcut aktif indeksler
+        B_indices: B Kümesi (Sınıf +1) için mevcut aktif indeksler
+        A_full: Tam veri seti A (Class -1)
+        B_full: Tam veri seti B (Class +1)
+        center_a: Seçilen merkez noktası (A'dan)
+        C: Hatalı sınıflandırma cezası için hiperparametre
+        lamb: Düzenlileştirme (regularization) için hiperparametre
 
     Returns:
-        Dictionary with optimal parameters w, xi, gamma, obj, or None if failed.
+        Optimal parametreler w, xi, gamma, obj içeren sözlük veya başarısız olursa None.
     """
     m_sub = len(A_indices)
     p_sub = len(B_indices)
-    # If A is empty, we stop (Set A is fully covered).
+    # A boşsa dururuz (A Kümesi tamamen kapsanmıştır).
     if m_sub == 0:
         return None
 
@@ -31,7 +31,7 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
         model = gp.Model("Q_k")
         model.setParam("OutputFlag", 0)
 
-        # Variables
+        # Değişkenler
         w = model.addVars(n_features, lb=-GRB.INFINITY, name="w")
         xi = model.addVar(lb=0.0, name="xi")
         gamma = model.addVar(lb=1.0, name="gamma")
@@ -40,8 +40,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
         if p_sub > 0:
             z_slack = model.addVars(p_sub, lb=0.0, name="z")
 
-        # Constraint 1: g(x) >= 0 (strictly > -1 in formulation with slack) for x in A
-        # Formally: g(a_i) + 1 <= y_i  --> misclassified if y_i > 0
+        # Kısıt 1: A'daki x için g(x) >= 0 (slack ile formülasyonda kesinlikle > -1)
+        # Resmi olarak: g(a_i) + 1 <= y_i  --> y_i > 0 ise yanlış sınıflandırılmış
         for idx_enum, original_idx in enumerate(A_indices):
             point = A_full[original_idx]
             diff = point - center_a
@@ -52,8 +52,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
             l1_norm = np.sum(np.abs(diff))
             model.addConstr(term1 + l1_norm * xi - gamma + 1 <= y_slack[idx_enum])
 
-        # Constraint 2: g(x) <= 0 (strictly < 1) for x in B
-        # Formally: -g(b_j) + 1 <= z_j --> misclassified if z_j > 0
+        # Kısıt 2: B'deki x için g(x) <= 0 (kesinlikle < 1)
+        # Resmi olarak: -g(b_j) + 1 <= z_j --> z_j > 0 ise yanlış sınıflandırılmış
         if p_sub > 0:
             for idx_enum, original_idx in enumerate(B_indices):
                 point = B_full[original_idx]
@@ -67,12 +67,12 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
                     -1 * term1 - l1_norm * xi + gamma + 1 <= z_slack[idx_enum]
                 )
 
-        # Objective: Min lambda*(||w||^2 + xi^2 + gamma^2) + 1/m * sum(y) + C/p * sum(z)
-        # We minimize the regularization term plus the weighted classification errors.
+        # Amaç: Min lambda*(||w||^2 + xi^2 + gamma^2) + 1/m * sum(y) + C/p * sum(z)
+        # Düzenlileştirme terimini ve ağırlıklı sınıflandırma hatalarını minimize ediyoruz.
         w_sq = gp.quicksum(w[j] * w[j] for j in range(n_features))
         reg_term = w_sq + xi * xi + gamma * gamma
 
-        # Normalization Weights (1/m for A, C/p for B)
+        # Normalizasyon Ağırlıkları (A için 1/m, B için C/p)
         weight_A = 1.0 / m_sub if m_sub > 0 else 0.0
         weight_B = C / p_sub if p_sub > 0 else 0.0
 

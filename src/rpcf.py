@@ -4,25 +4,25 @@ from src.solvers import solve_subproblem_qk
 
 class RPCF:
     """
-    Revised Polyhedral Conic Functions (r-PCF) Algorithm.
+    Revisied - Çokyüzlü Konik Fonksiyonlar (r-PCF) Algoritması.
 
-    This algorithm constructs a classification model by iteratively adding
-    polyhedral conic functions to separate class -1 (Set A) from class +1 (Set B).
-    It uses a "cookie-cutter" approach where correctly classified points from A are
-    removed in each iteration until A is empty (or max iterations reached).
+    Bu algoritma, -1 sınıfını (A Kümesi) +1 sınıfından (B Kümesi) ayırmak için
+    yinelemeli olarak çokyüzlü konik fonksiyonlar ekleyerek bir sınıflandırma modeli oluşturur.
+    Her iterasyonda A'dan doğru sınıflandırılan noktaların A boşalana (veya maksimum
+    iterasyona ulaşılana) kadar çıkarıldığı bir "kurabiye kalıbı" yaklaşımı kullanır.
     """
 
     def __init__(self, C=1.0, lamb=0.01):
         self.C = C
         self.lamb = lamb
-        self.functions = []  # List of learned conic functions
+        self.functions = []  # Öğrenilen konik fonksiyonların listesi
         self.centers = []
         self.A_full = None
         self.B_full = None
 
     def _evaluate_g(self, X, w, xi, gamma, center):
         """
-        Calculates the value of the conic function g(x).
+        Konik fonksiyon g(x)'in değerini hesaplar.
         g(x) = w'(x-a) + xi*||x-a||_1 - gamma
         """
         diff = X - center
@@ -31,18 +31,18 @@ class RPCF:
         return term1 + term2 - gamma
 
     def fit(self, X, y):
-        # Split into A (Class -1) and B (Class 1)
-        # We store indices relative to the FULL X
+        # A (Sınıf -1) ve B'ye (Sınıf 1) ayır
+        # İndeksleri TAM X'e göre saklıyoruz
         A_indices = np.where(y == -1)[0].tolist()
         B_indices = np.where(y == 1)[0].tolist()
 
         self.A_full = X
         self.B_full = X
 
-        # Iteratively separate class A from class B.
-        # Ideally, we want to find a set of cones whose intersection classifies B correctly
-        # and excludes A. In the constructive approach, we remove points from A that are
-        # "cut" (correctly classified as outside the current cone) in each step.
+        # A sınıfını B sınıfından yinelemeli olarak ayır.
+        # İdeal olarak, kesişimi B'yi doğru sınıflandıran bir koni kümesi bulmak istiyoruz
+        # ve A'yı hariç tutan. Yapıcı yaklaşımda, her adımda "kesilen"
+        # (mevcut koninin dışında olarak doğru sınıflandırılan) noktaları A'dan çıkarıyoruz.
 
         iteration = 0
         while len(A_indices) > 0:
@@ -61,20 +61,20 @@ class RPCF:
                 print("Solver failed. Break.")
                 break
 
-            # Store Model
+            # Modeli Sakla
             model_dict = {**params, "center": center_a}
             self.functions.append(model_dict)
             self.centers.append(center_a)
 
-            # Evaluate to prune datasets
-            # For A: Keep points where g(a) > 0 (Misclassified/Not covered)
+            # Veri setlerini budamak için değerlendir
+            # A için: g(a) > 0 olan noktaları tut (Yanlış sınıflandırılmış/Kapsanmamış)
             g_vals_A = self._evaluate_g(
                 X[A_indices], params["w"], params["xi"], params["gamma"], center_a
             )
             keep_mask_A = g_vals_A > 0
             A_indices = np.array(A_indices)[keep_mask_A].tolist()
 
-            # For B: Keep points where g(b) > 0 (Correctly classified)
+            # B için: g(b) > 0 olan noktaları tut (Doğru sınıflandırılmış)
             g_vals_B = self._evaluate_g(
                 X[B_indices], params["w"], params["xi"], params["gamma"], center_a
             )
@@ -86,7 +86,7 @@ class RPCF:
             )
 
     def select_center(self, candidates):
-        # Default r-PCF: Random selection
+        # Varsayılan r-PCF: Rastgele seçim
         return np.random.choice(candidates)
 
     def predict(self, X):
@@ -94,7 +94,7 @@ class RPCF:
             return np.zeros(len(X))
 
         # g(x) = min(g_1, g_2, ... g_k)
-        # Classify as -1 if min(g) <= 0, else 1
+        # min(g) <= 0 ise -1 olarak sınıflandır, aksi takdirde 1
         g_matrix = np.zeros((len(X), len(self.functions)))
 
         for k, func in enumerate(self.functions):
@@ -103,4 +103,10 @@ class RPCF:
             )
 
         g_min = np.min(g_matrix, axis=1)
+
+        if not self.functions:
+            return np.zeros(
+                len(X)
+            )  # Muhtemelen varsayılan bir sınıf döndürmeli veya bunu ele almalı.
+
         return np.where(g_min <= 0, -1, 1)

@@ -6,12 +6,12 @@ import numpy as np
 
 class VNS_RPCF(RPCF):
     """
-    VNS-RPCF: Variable Neighborhood Search enhanced r-PCF.
+    VNS-RPCF: Değişken Komşuluk Araması (Variable Neighborhood Search) ile geliştirilmiş r-PCF.
 
-    This class extends the minimal r-PCF algorithm by replacing the random center
-    selection strategy with a meta-heuristic search (VNS). It attempts to find
-    an optimal center 'a' that maximizes the separation efficiency (volume of A removed)
-    in each iteration.
+    Bu sınıf, rastgele merkez seçim stratejisini bir meta-sezgisel arama (VNS) ile
+    değiştirerek minimal r-PCF algoritmasını genişletir. Her iterasyonda ayırma
+    verimliliğini (çıkarılan A hacmi) maksimize eden optimal bir 'a' merkezi
+    bulmaya çalışır.
     """
 
     def __init__(
@@ -24,40 +24,40 @@ class VNS_RPCF(RPCF):
 
     def select_center(self, candidates_indices):
         """
-        Selects the best center using Variable Neighborhood Search (VNS).
+        Değişken Komşuluk Araması (VNS) kullanarak en iyi merkezi seçer.
         """
-        # candidates_indices is a list of valid indices in self.A_full
+        # candidates_indices, self.A_full içindeki geçerli indekslerin bir listesidir
 
-        # 1. Start with a random candidate
+        # 1. Rastgele bir aday ile başla
         current_best_idx = np.random.choice(candidates_indices)
         current_best_score = -np.inf
 
-        # Build NN for local search space on the CURRENT candidates
+        # MEVCUT adaylar üzerinde yerel arama uzayı için NN oluştur
         candidate_data = self.A_full[candidates_indices]
 
-        # Safety check depending on number of candidates
+        # Aday sayısına bağlı güvenlik kontrolü
         curr_k = min(self.k_neighbors, len(candidates_indices))
         if curr_k < 1:
             return current_best_idx
 
         nbrs_model = NearestNeighbors(n_neighbors=curr_k).fit(candidate_data)
 
-        # We need to access B to evaluate performance
+        # Performansı değerlendirmek için B'ye erişmemiz gerekiyor
         current_B_indices = getattr(self, "current_B_indices", [])
 
-        # Heuristic loop
+        # Sezgisel döngü
         for vns_step in range(self.max_vns_iter):
             try:
-                # Find position in candidates_indices list
+                # candidates_indices listesindeki pozisyonu bul
                 internal_idx = candidates_indices.index(current_best_idx)
             except ValueError:
                 break
 
-            # Get neighbors (indices in candidate_data)
+            # Komşuları al (candidate_data içindeki indeksler)
             distances, indices = nbrs_model.kneighbors([candidate_data[internal_idx]])
             neighbor_internal_indices = indices[0]
 
-            # Check neighbors
+            # Komşuları kontrol et
             improved = False
             checked_count = 0
             for n_int_idx in neighbor_internal_indices:
@@ -67,14 +67,14 @@ class VNS_RPCF(RPCF):
 
                 n_full_idx = candidates_indices[n_int_idx]
 
-                # Verify if we should test this neighbor (skip if same as current)
+                # Bu komşuyu test edip etmeyeceğimizi doğrula (mevcut ile aynıysa atla)
                 if n_full_idx == current_best_idx and vns_step > 0:
                     continue
 
-                # Solve QP
+                # QP'yi çöz
                 center_candidate = self.A_full[n_full_idx]
 
-                # Solve QP
+                # QP'yi çöz
                 params = solve_subproblem_qk(
                     candidates_indices,
                     current_B_indices,
@@ -88,7 +88,7 @@ class VNS_RPCF(RPCF):
                 if params is None:
                     continue
 
-                # Calculate Efficiency (Cut Volume)
+                # Verimliliği Hesapla (Kesilen Hacim)
                 g_vals = self._evaluate_g(
                     self.A_full[candidates_indices],
                     params["w"],
@@ -97,7 +97,7 @@ class VNS_RPCF(RPCF):
                     center_candidate,
                 )
 
-                # Correctly classified A (removed) are those with g(a) <= 0
+                # Doğru sınıflandırılmış A (çıkarılanlar), g(a) <= 0 olanlardır
                 removed_count = np.sum(g_vals <= 0)
                 score = removed_count
 
@@ -105,11 +105,11 @@ class VNS_RPCF(RPCF):
                     current_best_score = score
                     current_best_idx = n_full_idx
                     improved = True
-                    # First Improvement
+                    # İlk İyileştirme
                     break
 
             if not improved:
-                # Shaking: Jump to a random other candidate
+                # Çalkalama (Shaking): Rastgele başka bir adaya atla
                 idx_rand = np.random.choice(len(candidates_indices))
                 current_best_idx = candidates_indices[idx_rand]
 

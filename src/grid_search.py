@@ -4,20 +4,20 @@ from src.rpcf import RPCF
 
 def grid_search_rpcf(X_train, y_train, X_val, y_val):
     """
-    Performs a simple grid search to find the best hyperparameters (C, lambda)
-    for the r-PCF model on a validation set.
+    Doğrulama seti üzerinde r-PCF modeli için en iyi hiperparametreleri (C, lambda)
+    bulmak amacıyla basit bir ızgara araması (grid search) gerçekleştirir.
 
     Args:
-        X_train, y_train: Training data
-        X_val, y_val: Validation data
+        X_train, y_train: Eğitim verisi
+        X_val, y_val: Doğrulama verisi
 
     Returns:
-        dict: A dictionary containing the best 'C' and 'lamb' values found.
+        dict: Bulunan en iyi 'C' ve 'lamb' değerlerini içeren bir sözlük.
     """
     best_acc = -1.0
     best_params = {"C": 1.0, "lamb": 0.01}
 
-    # Paper-suggested range (simplified for speed)
+    # Makalede önerilen aralık (hız için basitleştirildi)
     C_values = [0.1, 1, 10, 100]
     lamb_values = [0.01, 0.1, 1]
 

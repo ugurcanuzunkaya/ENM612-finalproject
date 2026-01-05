@@ -1,9 +1,10 @@
 """
-Main execution script for r-PCF and VNS-RPCF Benchmarks.
+r-PCF ve VNS-RPCF Kıyaslamaları için ana yürütme betiği.
 
-This script runs a comprehensive benchmark comparing the standard r-PCF algorithm
-with the VNS-enhanced version across multiple UCI datasets. It handles data loading,
-preprocessing, grid search for hyperparameter tuning, training, and result reporting.
+Bu betik, standart r-PCF algoritmasını VNS ile geliştirilmiş sürümüyle birden fazla
+UCI veri seti üzerinde karşılaştıran kapsamlı bir kıyaslama çalıştırır. Veri yükleme,
+ön işleme, hiperparametre ayarlaması için ızgara araması (grid search), eğitim ve
+sonuç raporlama işlemlerini yönetir.
 """
 
 import time
@@ -15,6 +16,8 @@ from src.rpcf import RPCF
 from src.vns_rpcf import VNS_RPCF
 from src.grid_search import grid_search_rpcf
 from src.utils import plot_and_save, save_dataset_results
+
+np.random.seed(42)
 
 
 def run_all_benchmarks():
@@ -45,29 +48,29 @@ def run_all_benchmarks():
             print(f"Error loading {ds_name}: {e}")
             continue
 
-        # Ensure binary labels are mapped to {-1, +1} for the algorithm
+        # Algoritma için ikili etiketlerin {-1, +1} olarak eşlendiğinden emin olun
         uniques = np.unique(y)
         if set(uniques) == {0, 1}:
             y = np.where(y == 0, -1, 1)
         elif -1 not in uniques:
-            # Fallback: map the minimum value to -1, others to 1
+            # Yedek plan: minimum değeri -1'e, diğerlerini 1'e eşleyin
             min_val = np.min(uniques)
             y = np.where(y == min_val, -1, 1)
 
-        # Split data into Training and Test sets (Stratified)
+        # Veriyi Eğitim ve Test setlerine ayırın (Katmanlı)
         try:
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.3, stratify=y, random_state=42
             )
         except ValueError:
-            # Fallback for datasets with very small class counts where stratification fails
+            # Katmanlamanın başarısız olduğu çok küçük sınıf sayılarına sahip veri setleri için yedek plan
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.3, random_state=42
             )
 
-        # --- Grid Search for Hyperparameters ---
+        # --- Hiperparametreler için Izgara Araması (Grid Search) ---
         print("  > Performing Grid Search...")
-        # For simplicity/speed, we use a fixed validation split from X_train
+        # Basitlik/hız için, X_train'den sabit bir doğrulama bölümü kullanıyoruz
         try:
             X_t, X_v, y_t, y_v = train_test_split(
                 X_train, y_train, test_size=0.2, random_state=42
@@ -93,14 +96,14 @@ def run_all_benchmarks():
             rpcf = None
             t_rpcf = 0
 
-        # Plot if 2D
+        # Eğer 2D ise çizdirin
         if rpcf and X.shape[1] == 2:
             plot_and_save(
                 rpcf, X, y, f"RPCF - {ds_name}", f"solutions/{ds_name}_rpcf.png"
             )
 
         # --- VNS RPCF ---
-        print("  > Training VNS-RPCF (Optimized)..")
+        print("  > Training VNS-RPCF (Optimized)...")
         start = time.time()
         vns_rpcf = VNS_RPCF(
             C=C_opt,
@@ -118,7 +121,7 @@ def run_all_benchmarks():
             vns_rpcf = None
             t_vns = 0
 
-        # Plot if 2D
+        # Eğer 2D ise çizdirin
         if vns_rpcf and X.shape[1] == 2:
             plot_and_save(
                 vns_rpcf,
@@ -128,11 +131,13 @@ def run_all_benchmarks():
                 f"solutions/{ds_name}_vns_rpcf.png",
             )
 
-        # --- Save Detailed Results ---
+        # --- Detaylı Sonuçları Kaydedin ---
         save_dataset_results(ds_name, X_test, y_test, rpcf, vns_rpcf, t_rpcf, t_vns)
 
     print("\n" + "=" * 60)
-    print("All Benchmarks Completed. Check 'solutions/' directory for results.")
+    print(
+        "Tüm Kıyaslamalar Tamamlandı. Sonuçlar için 'solutions/' dizinini kontrol edin."
+    )
 
 
 if __name__ == "__main__":

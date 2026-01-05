@@ -1,8 +1,17 @@
-=== Detailed Results for Dataset: blobs_3d ===
+=== Summary for Dataset: blobs_3d ===
+
+Standard RPCF: Accuracy: 1.0000
+Training Time: 0.0064 seconds
+Number of Functions (Centers): 1
+VNS-RPCF: Accuracy: 1.0000
+Training Time: 0.1123 seconds
+Number of Functions (Centers): 1
+
+=== Detailed Results for Dataset: {ds_name} ===
 
 --- Model: Standard RPCF ---
 Accuracy: 1.0000
-Training Time: 0.0048 seconds
+Training Time: 0.0064 seconds
 Number of Functions (Centers): 1
 
 Evaluation Metrics:
@@ -17,17 +26,17 @@ weighted avg       1.00      1.00      1.00        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [-0.35357376  0.9821075   1.43478372]
-    Weight (w): [ 0.50812284 -0.3492352   0.0053627 ]
-    Xi: 0.223789
-    Gamma: 1.140651
-    QP Objective: 0.018089155458138998
+    Center: [-1.06277355  0.85879326  1.24952954]
+    Weight (w): [-0.04197356 -0.42853077 -0.01869031]
+    Xi: 0.277335
+    Gamma: 1.257434
+    QP Objective: 0.019162061025459816
 
 --------------------------------------------------
 
 --- Model: VNS-RPCF ---
 Accuracy: 1.0000
-Training Time: 0.1002 seconds
+Training Time: 0.1123 seconds
 Number of Functions (Centers): 1
 
 Evaluation Metrics:
@@ -42,9 +51,9 @@ weighted avg       1.00      1.00      1.00        60
 
 Model Parameters (Functions):
   Function 1:
-    Center: [-0.86878956  0.85904969  1.00101051]
-    Weight (w): [ 0.05114144 -0.36611561 -0.19429325]
-    Xi: 0.218744
-    Gamma: 1.161927
-    QP Objective: 0.016247192153795595
+    Center: [-1.50667794  1.0807711   1.02209532]
+    Weight (w): [-0.17308331 -0.28905364 -0.20998282]
+    Xi: 0.284307
+    Gamma: 1.304308
+    QP Objective: 0.02259777137694259
 

@@ -5,7 +5,7 @@ from src.visualizer import plot_decision_boundary
 
 def plot_and_save(model, X, y, title, filename):
     """
-    Plots the decision boundary for 2D datasets and saves the figure.
+    2D veri setleri için karar sınırını çizer ve şekli kaydeder.
     """
     try:
         if X.shape[1] == 2:
@@ -19,14 +19,33 @@ def plot_and_save(model, X, y, title, filename):
 
 def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf, t_vns):
     """
-    Saves detailed model results, parameters, and metrics to a text file.
+    İlk olarak veri seti için genel sonuçları ve özeti kaydeder.
+    Sonra ayrıntılı model sonuçlarını, parametrelerini ve metriklerini bir metin dosyasına kaydeder.
     """
     filename = f"solutions/{ds_name}_results.txt"
 
     with open(filename, "w") as f:
-        f.write(f"=== Detailed Results for Dataset: {ds_name} ===\n\n")
+        f.write(f"=== Summary for Dataset: {ds_name} ===\n\n")
+        if rpcf_model and hasattr(rpcf_model, "functions"):
+            f.write("Standard RPCF: ")
+            y_pred = rpcf_model.predict(X_test)
+            acc = accuracy_score(y_test, y_pred)
+            f.write(f"Accuracy: {acc:.4f}\n")
+            f.write(f"Training Time: {t_rpcf:.4f} seconds\n")
+            f.write(f"Number of Functions (Centers): {len(rpcf_model.functions)}\n")
 
-        # --- RPCF Section ---
+        if vns_model and hasattr(vns_model, "functions"):
+            f.write("VNS-RPCF: ")
+            y_pred = vns_model.predict(X_test)
+            acc = accuracy_score(y_test, y_pred)
+            f.write(f"Accuracy: {acc:.4f}\n")
+            f.write(f"Training Time: {t_vns:.4f} seconds\n")
+            f.write(f"Number of Functions (Centers): {len(vns_model.functions)}\n")
+
+        f.write("\n")
+        f.write("=== Detailed Results for Dataset: {ds_name} ===\n\n")
+
+        # --- RPCF Bölümü ---
         f.write("--- Model: Standard RPCF ---\n")
         if rpcf_model and hasattr(rpcf_model, "functions"):
             y_pred = rpcf_model.predict(X_test)
@@ -50,7 +69,7 @@ def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf,
 
         f.write("-" * 50 + "\n\n")
 
-        # --- VNS-RPCF Section ---
+        # --- VNS-RPCF Bölümü ---
         f.write("--- Model: VNS-RPCF ---\n")
         if vns_model and hasattr(vns_model, "functions"):
             y_pred = vns_model.predict(X_test)

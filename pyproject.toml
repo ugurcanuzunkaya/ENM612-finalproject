@@ -12,9 +12,3 @@ dependencies = [
     "matplotlib",
     "ucimlrepo>=0.0.7",
 ]
-
-[tool.uv]
-dev-dependencies = [
-    "ruff",
-    "pytest",
-]
