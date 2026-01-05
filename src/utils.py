@@ -43,7 +43,7 @@ def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf,
             f.write(f"Number of Functions (Centers): {len(vns_model.functions)}\n")
 
         f.write("\n")
-        f.write("=== Detailed Results for Dataset: {ds_name} ===\n\n")
+        f.write(f"=== Detailed Results for Dataset: {ds_name} ===\n\n")
 
         # --- RPCF Bölümü ---
         f.write("--- Model: Standard RPCF ---\n")
