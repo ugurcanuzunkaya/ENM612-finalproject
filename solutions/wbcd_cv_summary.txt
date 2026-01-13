@@ -1,0 +1,11 @@
+=== Cross-Validation Summary for Dataset: wbcd ===
+
+--- Standard RPCF ---
+Mean Accuracy: 0.9649 (+/- 0.0184)
+Mean Training Time: 0.0941 s
+Mean Centers: 2.4
+
+--- VNS-RPCF ---
+Mean Accuracy: 0.9667 (+/- 0.0187)
+Mean Training Time: 1.3970 s
+Mean Centers: 2.4

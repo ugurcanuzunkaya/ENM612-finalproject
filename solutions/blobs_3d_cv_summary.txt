@@ -1,0 +1,11 @@
+=== Cross-Validation Summary for Dataset: blobs_3d ===
+
+--- Standard RPCF ---
+Mean Accuracy: 1.0000 (+/- 0.0000)
+Mean Training Time: 0.0068 s
+Mean Centers: 1.0
+
+--- VNS-RPCF ---
+Mean Accuracy: 1.0000 (+/- 0.0000)
+Mean Training Time: 0.1238 s
+Mean Centers: 1.0

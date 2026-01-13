@@ -132,3 +132,51 @@ def save_cv_summary(ds_name, results):
             f.write("No successful runs.\n")
 
     print(f"CV Summary saved to {filename}")
+
+
+def plot_confusion_matrix(y_true, y_pred, title, filename):
+    """
+    Plots and saves the confusion matrix.
+    """
+    from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+    cm = confusion_matrix(y_true, y_pred)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[-1, 1])
+
+    plt.figure(figsize=(6, 5))
+    disp.plot(cmap=plt.cm.Blues, values_format="d")
+    plt.title(title)
+    plt.savefig(filename)
+    plt.close()
+    print(f"Confusion Matrix saved to {filename}")
+
+
+def plot_vns_convergence(histories, title, filename):
+    """
+    Plots the convergence of VNS (Score vs Iterations).
+    Plots the history of the first function search as a representative example.
+    """
+    if not histories:
+        return
+
+    # Select the longest or first non-empty history
+    target_history = histories[0]
+    for h in histories:
+        if len(h) > len(target_history):
+            target_history = h
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(
+        range(1, len(target_history) + 1),
+        target_history,
+        marker="o",
+        linestyle="-",
+        color="b",
+    )
+    plt.xlabel("VNS Iteration")
+    plt.ylabel("Score (Covered A Points)")
+    plt.title(title)
+    plt.grid(True)
+    plt.savefig(filename)
+    plt.close()
+    print(f"VNS Convergence Plot saved to {filename}")

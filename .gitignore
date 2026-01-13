@@ -31,9 +31,6 @@ htmlcov/
 data/*
 !data/.gitkeep
 
-# Ignore outputs
-solutions/
-
 # Gurobi
 gurobi.log
 *.lp

@@ -124,10 +124,12 @@ def plot_decision_boundary(model, X, y, title="r-PCF Decision Boundary"):
     # plt.show()
 
 
-def plot_decision_boundary_3d(model, X, y, title="r-PCF 3D Visualization"):
+def plot_decision_boundary_3d(
+    model, X, y, title="r-PCF 3D Visualization", filename=None
+):
     """
     Plots the r-PCF decision boundary and data points in 3D.
-    Note: 'Show' mode requires an interactive backend.
+    If 'filename' is provided, saves the figure. Otherwise, shows it interactively.
     """
     from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
@@ -216,4 +218,9 @@ def plot_decision_boundary_3d(model, X, y, title="r-PCF 3D Visualization"):
     ax.set_zlabel("Feature 3")
     ax.legend()
 
-    plt.show()  # Show directly as requested
+    if filename:
+        plt.savefig(filename)
+        plt.close()
+        print(f"3D Plot saved to {filename}")
+    else:
+        plt.show()

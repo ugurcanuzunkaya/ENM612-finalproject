@@ -1,0 +1,11 @@
+=== Cross-Validation Summary for Dataset: breast_cancer ===
+
+--- Standard RPCF ---
+Mean Accuracy: 0.9631 (+/- 0.0179)
+Mean Training Time: 0.1964 s
+Mean Centers: 4.4
+
+--- VNS-RPCF ---
+Mean Accuracy: 0.9649 (+/- 0.0200)
+Mean Training Time: 2.9991 s
+Mean Centers: 4.2

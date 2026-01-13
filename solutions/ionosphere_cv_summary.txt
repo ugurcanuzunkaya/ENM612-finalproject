@@ -1,0 +1,11 @@
+=== Cross-Validation Summary for Dataset: ionosphere ===
+
+--- Standard RPCF ---
+Mean Accuracy: 0.8858 (+/- 0.0551)
+Mean Training Time: 0.2733 s
+Mean Centers: 10.0
+
+--- VNS-RPCF ---
+Mean Accuracy: 0.8831 (+/- 0.0294)
+Mean Training Time: 3.6564 s
+Mean Centers: 10.2
