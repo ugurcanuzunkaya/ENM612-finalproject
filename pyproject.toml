@@ -3,7 +3,7 @@ name = "rpcf-project"
 version = "0.1.0"
 description = "Revised Polyhedral Conic Functions (r-PCF) implementation with VNS enhancement"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "gurobipy",
     "numpy",
@@ -11,4 +11,5 @@ dependencies = [
     "scikit-learn",
     "matplotlib",
     "ucimlrepo>=0.0.7",
+    "pytest",
 ]

@@ -10,18 +10,18 @@ sonuç raporlama işlemlerini yönetir.
 import time
 import os
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold
 from src.dataloader import DatasetLoader
 from src.rpcf import RPCF
 from src.vns_rpcf import VNS_RPCF
 from src.grid_search import grid_search_rpcf
-from src.utils import plot_and_save, save_dataset_results
+from src.utils import plot_and_save, save_cv_summary
 
 np.random.seed(42)
 
 
-def run_all_benchmarks():
-    datasets = [
+def run_all_benchmarks(selected_datasets=None):
+    default_datasets = [
         "moons",
         "breast_cancer",
         "blobs_3d",
@@ -33,11 +33,26 @@ def run_all_benchmarks():
         "ionosphere",
     ]
 
+    datasets = selected_datasets if selected_datasets else default_datasets
+
     loader = DatasetLoader()
     if not os.path.exists("solutions"):
         os.makedirs("solutions")
 
-    print(f"Starting Benchmark Suite on {len(datasets)} datasets...")
+    print(f"Starting Benchmark Suite on {len(datasets)} datasets with 5-Fold CV...")
+    print("=" * 60)
+
+    for ds_name in datasets:
+        # ... (rest of the loop remains the same, but since replace_file_content replaces the block, I need to keep the content or just change the definition and the start of the function if I can target it precisely)
+        # Actually, replacing the whole function signature and list definition is enough if I use the right TargetContent.
+        pass  # Placeholder for thought process
+
+    # Re-reading: I should target the function definition and the list.
+
+    if not os.path.exists("solutions"):
+        os.makedirs("solutions")
+
+    print(f"Starting Benchmark Suite on {len(datasets)} datasets with 5-Fold CV...")
     print("=" * 60)
 
     for ds_name in datasets:
@@ -48,97 +63,119 @@ def run_all_benchmarks():
             print(f"Error loading {ds_name}: {e}")
             continue
 
-        # Algoritma için ikili etiketlerin {-1, +1} olarak eşlendiğinden emin olun
+        # Ensure binary labels are {-1, +1}
         uniques = np.unique(y)
         if set(uniques) == {0, 1}:
             y = np.where(y == 0, -1, 1)
         elif -1 not in uniques:
-            # Yedek plan: minimum değeri -1'e, diğerlerini 1'e eşleyin
             min_val = np.min(uniques)
             y = np.where(y == min_val, -1, 1)
 
-        # Veriyi Eğitim ve Test setlerine ayırın (Katmanlı)
-        try:
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.3, stratify=y, random_state=42
+        # 5-Fold Stratified Cross-Validation
+        skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+        # Metrics Storage
+        cv_results = {
+            "rpcf": {"accuracies": [], "times": [], "centers": []},
+            "vns": {"accuracies": [], "times": [], "centers": []},
+        }
+
+        fold_idx = 1
+        for train_index, test_index in skf.split(X, y):
+            print(f"  > Fold {fold_idx}/5...")
+            X_train_fold, X_test_fold = X[train_index], X[test_index]
+            y_train_fold, y_test_fold = y[train_index], y[test_index]
+
+            # --- Grid Search on Train Fold ---
+            # Use a subset of the training fold for validation in grid search
+            try:
+                X_t, X_v, y_t, y_v = train_test_split(
+                    X_train_fold, y_train_fold, test_size=0.2, random_state=42
+                )
+                best_params = grid_search_rpcf(X_t, y_t, X_v, y_v)
+                C_opt = best_params["C"]
+                lamb_opt = best_params["lamb"]
+            except Exception:
+                C_opt, lamb_opt = 10.0, 0.01
+
+            # --- Standard RPCF ---
+            start = time.time()
+            rpcf = RPCF(C=C_opt, lamb=lamb_opt)
+            try:
+                rpcf.fit(X_train_fold, y_train_fold)
+                t_rpcf = time.time() - start
+
+                y_pred = rpcf.predict(X_test_fold)
+                acc = np.mean(y_pred == y_test_fold)
+                n_centers = len(rpcf.functions)
+
+                cv_results["rpcf"]["accuracies"].append(acc)
+                cv_results["rpcf"]["times"].append(t_rpcf)
+                cv_results["rpcf"]["centers"].append(n_centers)
+            except Exception as e:
+                print(f"    RPCF Fold {fold_idx} Failed: {e}")
+                rpcf = None
+                t_rpcf = 0
+
+            # --- VNS RPCF ---
+            start = time.time()
+            vns_rpcf = VNS_RPCF(
+                C=C_opt,
+                lamb=lamb_opt,
+                k_neighbors=20,
+                max_vns_iter=5,
+                max_neighbors_check=5,
             )
-        except ValueError:
-            # Katmanlamanın başarısız olduğu çok küçük sınıf sayılarına sahip veri setleri için yedek plan
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.3, random_state=42
-            )
+            try:
+                vns_rpcf.fit(X_train_fold, y_train_fold)
+                t_vns = time.time() - start
 
-        # --- Hiperparametreler için Izgara Araması (Grid Search) ---
-        print("  > Performing Grid Search...")
-        # Basitlik/hız için, X_train'den sabit bir doğrulama bölümü kullanıyoruz
-        try:
-            X_t, X_v, y_t, y_v = train_test_split(
-                X_train, y_train, test_size=0.2, random_state=42
-            )
-            best_params = grid_search_rpcf(X_t, y_t, X_v, y_v)
-            print(f"    Best Params: {best_params}")
-            C_opt = best_params["C"]
-            lamb_opt = best_params["lamb"]
-        except Exception as e:
-            print(f"    Grid Search Failed: {e}. Using defaults.")
-            C_opt, lamb_opt = 10.0, 0.01
+                y_pred = vns_rpcf.predict(X_test_fold)
+                acc = np.mean(y_pred == y_test_fold)
+                n_centers = len(vns_rpcf.functions)
 
-        # --- Standard RPCF ---
-        print(f"  > Training Standard RPCF (C={C_opt}, lamb={lamb_opt})...")
-        start = time.time()
-        rpcf = RPCF(C=C_opt, lamb=lamb_opt)
-        try:
-            rpcf.fit(X_train, y_train)
-            t_rpcf = time.time() - start
-            print(f"    Done in {t_rpcf:.2f}s. Centers: {len(rpcf.functions)}")
-        except Exception as e:
-            print(f"    Failed: {e}")
-            rpcf = None
-            t_rpcf = 0
+                cv_results["vns"]["accuracies"].append(acc)
+                cv_results["vns"]["times"].append(t_vns)
+                cv_results["vns"]["centers"].append(n_centers)
+            except Exception as e:
+                print(f"    VNS Fold {fold_idx} Failed: {e}")
+                vns_rpcf = None
+                t_vns = 0
 
-        # Eğer 2D ise çizdirin
-        if rpcf and X.shape[1] == 2:
-            plot_and_save(
-                rpcf, X, y, f"RPCF - {ds_name}", f"solutions/{ds_name}_rpcf.png"
-            )
+            # Optional: Plot last fold for 2D
+            if fold_idx == 5 and X.shape[1] == 2:
+                if rpcf:
+                    plot_and_save(
+                        rpcf,
+                        X,
+                        y,
+                        f"RPCF - {ds_name} (Fold 5)",
+                        f"solutions/{ds_name}_rpcf_fold5.png",
+                    )
+                if vns_rpcf:
+                    plot_and_save(
+                        vns_rpcf,
+                        X,
+                        y,
+                        f"VNS-RPCF - {ds_name} (Fold 5)",
+                        f"solutions/{ds_name}_vns_rpcf_fold5.png",
+                    )
 
-        # --- VNS RPCF ---
-        print("  > Training VNS-RPCF (Optimized)...")
-        start = time.time()
-        vns_rpcf = VNS_RPCF(
-            C=C_opt,
-            lamb=lamb_opt,
-            k_neighbors=20,
-            max_vns_iter=5,
-            max_neighbors_check=5,
-        )
-        try:
-            vns_rpcf.fit(X_train, y_train)
-            t_vns = time.time() - start
-            print(f"    Done in {t_vns:.2f}s. Centers: {len(vns_rpcf.functions)}")
-        except Exception as e:
-            print(f"    Failed: {e}")
-            vns_rpcf = None
-            t_vns = 0
+            fold_idx += 1
 
-        # Eğer 2D ise çizdirin
-        if vns_rpcf and X.shape[1] == 2:
-            plot_and_save(
-                vns_rpcf,
-                X,
-                y,
-                f"VNS-RPCF - {ds_name}",
-                f"solutions/{ds_name}_vns_rpcf.png",
-            )
-
-        # --- Detaylı Sonuçları Kaydedin ---
-        save_dataset_results(ds_name, X_test, y_test, rpcf, vns_rpcf, t_rpcf, t_vns)
+        # --- Save Summary Results ---
+        save_cv_summary(ds_name, cv_results)
 
     print("\n" + "=" * 60)
-    print(
-        "Tüm Kıyaslamalar Tamamlandı. Sonuçlar için 'solutions/' dizinini kontrol edin."
-    )
+    print("All Benchmarks Completed. Check 'solutions/' for summaries.")
 
 
 if __name__ == "__main__":
-    run_all_benchmarks()
+    import sys
+
+    if len(sys.argv) > 1:
+        # Allow passing multiple datasets separated by spaces
+        target_datasets = sys.argv[1:]
+        run_all_benchmarks(target_datasets)
+    else:
+        run_all_benchmarks()

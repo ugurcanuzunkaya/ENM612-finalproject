@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import accuracy_score, classification_report
 from src.visualizer import plot_decision_boundary
 
@@ -92,3 +93,42 @@ def save_dataset_results(ds_name, X_test, y_test, rpcf_model, vns_model, t_rpcf,
             f.write("Model failed to train or invalid.\n\n")
 
     print(f"Results saved to {filename}")
+
+
+def save_cv_summary(ds_name, results):
+    """
+    Saves the aggregated cross-validation results for a dataset.
+    """
+    filename = f"solutions/{ds_name}_cv_summary.txt"
+
+    with open(filename, "w") as f:
+        f.write(f"=== Cross-Validation Summary for Dataset: {ds_name} ===\n\n")
+
+        # RPCF Results
+        f.write("--- Standard RPCF ---\n")
+        if results["rpcf"]["accuracies"]:
+            mean_acc = np.mean(results["rpcf"]["accuracies"])
+            std_acc = np.std(results["rpcf"]["accuracies"])
+            mean_time = np.mean(results["rpcf"]["times"])
+            mean_centers = np.mean(results["rpcf"]["centers"])
+            f.write(f"Mean Accuracy: {mean_acc:.4f} (+/- {std_acc:.4f})\n")
+            f.write(f"Mean Training Time: {mean_time:.4f} s\n")
+            f.write(f"Mean Centers: {mean_centers:.1f}\n")
+        else:
+            f.write("No successful runs.\n")
+        f.write("\n")
+
+        # VNS-RPCF Results
+        f.write("--- VNS-RPCF ---\n")
+        if results["vns"]["accuracies"]:
+            mean_acc = np.mean(results["vns"]["accuracies"])
+            std_acc = np.std(results["vns"]["accuracies"])
+            mean_time = np.mean(results["vns"]["times"])
+            mean_centers = np.mean(results["vns"]["centers"])
+            f.write(f"Mean Accuracy: {mean_acc:.4f} (+/- {std_acc:.4f})\n")
+            f.write(f"Mean Training Time: {mean_time:.4f} s\n")
+            f.write(f"Mean Centers: {mean_centers:.1f}\n")
+        else:
+            f.write("No successful runs.\n")
+
+    print(f"CV Summary saved to {filename}")
