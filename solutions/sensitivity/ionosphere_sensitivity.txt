@@ -1,0 +1,21 @@
+=== Sensitivity Analysis Results: ionosphere ===
+
+Parameter: k_neighbors (VNS neighborhood size)
+Tested values: [5, 10, 20, 30, 50, 75, 100]
+
+Best k: 100 (Test Accuracy: 0.9059)
+
+--- Summary ---
+Accuracy Range: [0.8657, 0.9059]
+Time Range:     [3.0302s, 6.3877s]
+
+--- Detailed Results ---
+k      Train Acc    Test Acc     Train Time   Test Time    Centers    Solved  
+------------------------------------------------------------------------
+5      0.9940       0.8832       5.4589       0.0000       3.80       45.70   
+10     0.9918       0.8802       6.3877       0.0000       3.70       47.50   
+20     0.9870       0.8657       4.6821       0.0000       3.40       48.00   
+30     0.9940       0.8857       3.1596       0.0000       3.80       46.90   
+50     0.9946       0.8802       3.0302       0.0000       3.80       46.20   
+75     0.9959       0.8859       3.2128       0.0000       3.90       47.70   
+100    0.9940       0.9059       3.4833       0.0000       3.70       50.10   

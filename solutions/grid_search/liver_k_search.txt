@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: liver ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.9710
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.9710
+10         0.9710
+20         0.9710
+75         0.9710
+100        0.9710
+50         0.9565
+30         0.9420

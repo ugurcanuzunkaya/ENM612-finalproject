@@ -1,0 +1,21 @@
+=== Sensitivity Analysis Results: blobs_3d ===
+
+Parameter: k_neighbors (VNS neighborhood size)
+Tested values: [5, 10, 20, 30, 50, 75, 100]
+
+Best k: 5 (Test Accuracy: 1.0000)
+
+--- Summary ---
+Accuracy Range: [1.0000, 1.0000]
+Time Range:     [0.1671s, 0.2968s]
+
+--- Detailed Results ---
+k      Train Acc    Test Acc     Train Time   Test Time    Centers    Solved  
+------------------------------------------------------------------------
+5      1.0000       1.0000       0.1672       0.0000       1.00       18.00   
+10     1.0000       1.0000       0.1721       0.0000       1.00       18.00   
+20     1.0000       1.0000       0.1671       0.0000       1.00       18.00   
+30     1.0000       1.0000       0.1675       0.0000       1.00       18.00   
+50     1.0000       1.0000       0.2823       0.0000       1.00       18.00   
+75     1.0000       1.0000       0.2968       0.0000       1.00       18.00   
+100    1.0000       1.0000       0.2330       0.0000       1.00       18.00   

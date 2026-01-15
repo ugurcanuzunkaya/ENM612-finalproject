@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: WBCP
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.7839     0.0748     0.6000     0.9000     50
+VNS-RPCF        0.7751     0.0803     0.6000     0.9000     50
+PCF             0.7324     0.0814     0.6000     0.9000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=211.5, p=0.213750
+   t-test:   stat=1.0985, p=0.277333
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=227.5, p=0.002969
+   t-test:   stat=3.4287, p=0.001238
+   Result:   SIGNIFICANT (Winner: RPCF)
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=248.0, p=0.006381
+   t-test:   stat=2.7629, p=0.008046
+   Result:   SIGNIFICANT (Winner: VNS-RPCF)
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 2

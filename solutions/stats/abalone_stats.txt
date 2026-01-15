@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: ABALONE
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.7677     0.0089     0.7500     0.7739     5
+VNS-RPCF        0.7584     0.0130     0.7428     0.7739     5
+PCF             0.7299     0.0159     0.6998     0.7428     5
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=0.0, p=0.125000
+   t-test:   stat=1.7691, p=0.151603
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=0.0, p=0.062500
+   t-test:   stat=4.1651, p=0.014087
+   Result:   NOT SIGNIFICANT
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=0.0, p=0.062500
+   t-test:   stat=5.9241, p=0.004068
+   Result:   NOT SIGNIFICANT
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 0

@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: spambase ===
+
+Best k_neighbors: 75
+Best Accuracy: 0.9414
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+75         0.9414
+10         0.9392
+5          0.9381
+50         0.9370
+20         0.9349
+30         0.9327
+100        0.9327

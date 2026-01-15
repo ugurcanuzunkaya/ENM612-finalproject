@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: BREAST_CANCER
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.9550     0.0290     0.8947     1.0000     50
+VNS-RPCF        0.9596     0.0258     0.8947     1.0000     50
+PCF             0.9424     0.0293     0.8772     1.0000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=175.5, p=0.093912
+   t-test:   stat=-1.4569, p=0.151510
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=130.5, p=0.012115
+   t-test:   stat=2.9300, p=0.005135
+   Result:   SIGNIFICANT (Winner: RPCF)
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=149.0, p=0.000423
+   t-test:   stat=3.5645, p=0.000825
+   Result:   SIGNIFICANT (Winner: VNS-RPCF)
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 2

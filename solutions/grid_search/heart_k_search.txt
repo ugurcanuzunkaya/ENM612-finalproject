@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: heart ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.8197
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.8197
+10         0.8197
+50         0.8197
+75         0.8197
+20         0.7705
+100        0.7705
+30         0.7213

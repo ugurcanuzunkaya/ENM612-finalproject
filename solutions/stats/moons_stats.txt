@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: MOONS
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.9810     0.0298     0.9000     1.0000     50
+VNS-RPCF        0.9760     0.0335     0.8500     1.0000     50
+PCF             0.9710     0.0318     0.9000     1.0000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=72.5, p=0.346241
+   t-test:   stat=0.8963, p=0.374497
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=59.5, p=0.043461
+   t-test:   stat=1.8708, p=0.067347
+   Result:   SIGNIFICANT (Winner: RPCF)
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=122.5, p=0.411315
+   t-test:   stat=0.7977, p=0.428880
+   Result:   NOT SIGNIFICANT
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 1

@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: wbcp ===
+
+Best k_neighbors: 75
+Best Accuracy: 0.8000
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+75         0.8000
+100        0.8000
+5          0.7750
+30         0.7750
+10         0.7500
+50         0.7500
+20         0.7250

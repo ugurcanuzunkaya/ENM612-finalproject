@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: votes ===
+
+Best k_neighbors: 30
+Best Accuracy: 0.9425
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+30         0.9425
+50         0.9425
+10         0.9195
+20         0.9195
+100        0.8966
+5          0.8851
+75         0.8851

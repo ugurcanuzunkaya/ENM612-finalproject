@@ -1,0 +1,81 @@
+============================================================
+         REPORT FOR DATASET: BLOBS_3D
+============================================================
+
+==================================================
+           BEST HYPERPARAMETERS (Grid Search)
+==================================================
+
+  RPCF / VNS-RPCF:
+    C (Misclassification Penalty): 0.001
+    Lambda (Regularization):       0.001
+    k_neighbors (VNS):             5
+
+==================================================
+           OVERALL STATISTICS (All Seeds & Folds)
+==================================================
+
+Model      Mean Test  Std Test  Mean Train  Mean Time  Mean Centers
+--------------------------------------------------------------------
+RPCF       1.0000     0.0000    1.0000      0.0087     1.0         
+VNS-RPCF   1.0000     0.0000    1.0000      0.1615     1.0         
+PCF        1.0000     0.0000    1.0000      0.0035     1.0         
+
+==================================================
+           STATISTICAL SIGNIFICANCE TESTS
+==================================================
+
+Comparison                p-value      Result               Winner              
+-----------------------------------------------------------------------------
+RPCF vs VNS-RPCF          1.000000     NOT SIG.             No significant dif  
+RPCF vs PCF               1.000000     NOT SIG.             No significant dif  
+VNS-RPCF vs PCF           1.000000     NOT SIG.             No significant dif  
+
+  Primary Comparison: RPCF vs VNS-RPCF
+
+  Wilcoxon Signed-Rank Test:
+    Statistic: 0
+    p-value:   1.000000
+
+  Paired t-test:
+    Statistic: nan
+    p-value:   nan
+
+  Significance (alpha=0.05): NOT SIGNIFICANT
+  Winner: No significant difference
+
+==================================================
+           DETAILED RESULTS (Last Run Example)
+==================================================
+
+--- Standard RPCF ---
+Training Time:       0.0082 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  1
+------------------------------
+
+--- VNS-RPCF ---
+Training Time:       0.1583 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  18
+------------------------------
+
+--- Original PCF ---
+Training Time:       0.0033 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  1
+------------------------------
+
+
+============================================================
+                     END OF REPORT
+============================================================

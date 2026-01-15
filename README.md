@@ -1,125 +1,167 @@
-# Revised Polyhedral Conic Functions (r-PCF) ve VNS İyileştirmesi
+# r-PCF ve VNS-RPCF
 
-## Proje Hedefi
+Bu proje, **revisied Polyhedral Conic Functions (r-PCF)** algoritmasını ve performansını artırmak için geliştirilen **Değişken Komşuluk Arama (VNS)** tabanlı sezgisel yaklaşımı **(VNS-RPCF)** sunmaktadır. Çalışma, bu algoritmaları standart **PCF** ile karşılaştırmalı olarak analiz eder.
 
-Bu proje, ENM612 final projesi kapsamında, ikili sınıflandırma (binary classification) problemleri için geliştirilen **r-PCF (Revised Polyhedral Conic Functions)** algoritmasını uygulamayı ve bu algoritmayı **Değişken Komşuluk Arama (Variable Neighborhood Search - VNS)** meta-sezgiseli ile geliştirmeyi amaçlar.
+## Özet
 
-Temel hedef, sınıflandırma doğruluğunu yüksek tutarken, veri setini ayırmak için gereken konik fonksiyon (merkez) sayısını minimize etmektir. Proje, orijinal makaledeki yöntemleri Python ve Gurobi Optimizasyon Çözücüsü kullanarak yeniden üretir ve geliştirir.
+Sınıflandırma problemlerinde, veriyi ayıran en iyi hiper düzlemlerin bulunması kritiktir. Mevcut PCF yöntemleri aşırı öğrenmeye (overfitting) yatkın olabilir. Bu çalışmada, **$l_2$-norm düzenlileştirmesi** eklenmiş yeni bir formülasyon olan **r-PCF** ve bu modelin hiperparametre ile küme merkezlerini optimize eden **VNS-RPCF** algoritması incelenmiştir. 11 farklı veri seti üzerinde yapılan kapsamlı deneyler, VNS-RPCF'in özellikle karmaşık ve doğrusal olmayan veri setlerinde standart r-PCF'e göre istatistiksel olarak anlamlı bir performans artışı sağladığını göstermektedir. Ayrıca, algoritmaların yorumlanabilirliği (daha az sayıda fonksiyon/merkez kullanımı) optimize edilmiştir.
 
-## Özellikler
+---
 
-* **r-PCF Algoritması**: İteratif "cookie cutter" mantığıyla çalışan, matematiksel programlama tabanlı sınıflandırma.
-* **VNS-RPCF (Geliştirilmiş Model)**: Rastgele merkez seçimi yerine, VNS kullanarak en iyi ayrımı yapacak merkezi arayan hibrit algoritma.
-* **Kapsamlı Veri Desteği**: `DatasetLoader` modülü sayesinde 9 farklı veri seti üzerinde (Moons, Ionosphere, Breast Cancer, vb.) otomatik test imkanı.
-* **Otomatik Eksik Veri Tamamlama**: Eksik veri içeren veri setleri (örn. WBCP) için otomatik `imputation` işlemi.
-* **Detaylı Raporlama**: Her deney için eğitim süresi, doğruluk, fonksiyon sayısı ve model parametrelerinin (ağırlıklar, biaslar) ayrı dosyalara kaydedilmesi.
-* **Görselleştirme**: 2 boyutlu veri setleri için karar sınırlarının ve merkezlerin görselleştirilmesi.
+## Metodoloji
 
-## Desteklenen Veri Setleri
+Proje kapsamında üç temel algoritma karşılaştırılmıştır:
 
-Proje aşağıdaki veri setlerini `src/dataloader.py` üzerinden otomatik olarak indirir ve işler (`ucimlrepo` veya `sklearn` kaynaklı):
+1. **r-PCF (revised Polyhedral Conic Functions):**
+    * Orijinal PCF'ye $C$ (ceza parametresi) ve $\lambda$ (düzenlileştirme parametresi) eklenerek genelleştirilmiştir.
+    * Amaç: Aşırı öğrenmeyi önlemek ve daha iyi genelleme yapmak.
+    * Her iterasyonda karesel programlama (QP) alt problemi çözer.
 
-1. **moons**: Sentetik "Make Moons" veri seti (2D, doğrusal olmayan).
-2. **breast_cancer**: Sklearn Breast Cancer Wisconsin (Diagnostic).
-3. **blobs_3d**: Sentetik 3 boyutlu veri seti.
-4. **wbcd**: Wisconsin Breast Cancer (Diagnostic) - UCI ID 17.
-5. **wbcp**: Wisconsin Breast Cancer (Prognostic) - UCI ID 16.
-6. **heart**: Cleveland Heart Disease - UCI ID 45.
-7. **liver**: BUPA Liver Disorders - UCI ID 60.
-8. **votes**: Congressional Voting Records - UCI ID 105.
-9. **ionosphere**: Ionosphere Radar Data - UCI ID 52.
+2. **VNS-RPCF (Variable Neighborhood Search enhanced revised Polyhedral Conic Functions):**
+    * r-PCF'in yerel minimumlara takılmasını önlemek için geliştirilmiştir.
+    * Deterministik r-PCF çözümünü, rastgele yer değiştirmeler (shaking) ve yerel aramalar ile iyileştirir.
+    * Daha kararlı ve yüksek doğruluklu modeller üretir.
+    * Kullanılan operatörün görevi, r-PCF algoritmasının yerel minimumlara takılmasını önlemektir. Bunu da seçilen küme merkezlerinin yerini değiştirerek yapar. Bu sayede daha iyi performans elde edilir.
+    * Destroy Operatörü: Seçilen küme merkezlerinin yerini değiştirir.
+    * Repair Operatörü: Seçilen küme merkezlerini r-PCF algoritması ile iyileştirir.
 
-## Kurulum ve Hazırlık
+3. **Standart PCF (Polyhedral Conic Functions):**
+    * Düzenlileştirme içermeyen temel algoritma. Referans noktası olarak kullanılmıştır.
+    * Her iterasyonda karesel programlama (QP) alt problemi çözer. Katı kısıtlamaları (hard constraints) vardır.
 
-### Ön Gereksinimler
+---
 
-* **Python 3.12+**
-* **Gurobi Lisansı**: Kodun çalışması için sisteminizde geçerli bir `gurobi.lic` dosyası bulunmalıdır (Akademik lisans önerilir).
+## Deneysel Kurulum
 
-### Seçenek 1: `uv` ile Kurulum (Önerilen)
+* **Veri Setleri:** UCI Makine Öğrenmesi deposundan ve sentetik kaynaklardan seçilen 11 veri seti.
+* **Doğrulama Yöntemi:**
+  * Küçük veri setleri ($N < 1000$): **10-Katmanlı Çapraz Doğrulama (10-Fold CV)**
+  * Büyük veri setleri ($N \ge 1000$): **Hold-out (%80 Eğitim, %20 Test)**
+* **Tekrarlar:** Deneyler **5 farklı rastgele tohum (seed)** ile tekrarlanmıştır.
+* **Hiperparametre Optimizasyonu:**
+  * Grid Search: $C$ ve $\lambda$ parametreleri için.
+  * VNS: $k_{neighbors}$ (komşuluk sayısı) optimize edilmiştir.
 
-Bu proje modern Python araç seti `uv` ile yapılandırılmıştır.
+---
 
-1. Bağımlılıkları yükleyin:
+## Deneysel Sonuçlar
 
-   ```bash
-   uv sync
-   ```
+### Tablo 1: Test Doğruluğu Performans Özeti (Ortalama ± Standart Sapma)
 
-2. Projeyi çalıştırın:
+| Veri Seti | r-PCF | VNS-RPCF | PCF | En İyi Model |
+| :--- | :--- | :--- | :--- | :--- |
+| **Moons** | 0.9710 ± 0.036 | **0.9840 ± 0.029** | 0.9640 ± 0.038 | VNS-RPCF |
+| **Ionosphere** | **0.9066 ± 0.061** | 0.9060 ± 0.046 | 0.8672 ± 0.053 | r-PCF / VNS |
+| **Spambase** | 0.9216 ± 0.010 | **0.9231 ± 0.011** | 0.9006 ± 0.013 | VNS-RPCF |
+| **WBCD** | 0.9698 ± 0.025 | 0.9698 ± 0.025 | 0.9396 ± 0.034 | r-PCF / VNS |
+| **WBCP** | 0.7678 ± 0.094 | **0.7748 ± 0.076** | 0.7343 ± 0.079 | VNS-RPCF |
+| **Votes** | **0.9425 ± 0.037** | 0.9411 ± 0.035 | 0.9114 ± 0.085 | r-PCF |
+| **Breast Cancer** | 0.9607 ± 0.027 | **0.9625 ± 0.027** | 0.9649 ± 0.034 | PCF / VNS |
+| **Blobs 3D** | **1.0000 ± 0.000** | **1.0000 ± 0.000** | **1.0000 ± 0.000** | Hepsi |
+| **Liver** | **0.9445 ± 0.040** | 0.9442 ± 0.039 | 0.9252 ± 0.041 | r-PCF |
+| **Heart** | **0.7547 ± 0.071** | 0.7492 ± 0.070 | 0.7477 ± 0.070 | r-PCF |
+| **Statlog Heart** | 0.7422 ± 0.067 | 0.7511 ± 0.087 | **0.7622 ± 0.065** | PCF |
 
-   ```bash
-   uv run python main.py
-   ```
+### Tablo 2: Eğitim Performansı ve Model Karmaşıklığı (Tipik Sonuçlar)
 
-### Seçenek 2: `pip` ile Kurulum
+Bu tablo, algoritmaların eğitim başarısını, işlem yükünü (süre) ve model karmaşıklığını (merkez sayısı) göstermektedir.
 
-Standart Python ortamı için:
+| Veri Seti | Algoritma | Eğitim Doğruluğu (Train Acc) | Eğitim Süresi (s) | Merkez Sayısı (Centers) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Moons** | r-PCF | 0.9852 | 0.023 | 5 |
+| | VNS-RPCF | 0.9862 | 0.297 | 4.5 |
+| | PCF | 1.0000 | 0.015 | 7.5 |
+| **Ionosphere** | r-PCF | 0.9968 | 0.280 | 9 |
+| | VNS-RPCF | 1.0000 | 3.758 | 11 |
+| **Spambase** | r-PCF | 0.9867 | 23.34 | 216 |
+| | VNS-RPCF | 0.9870 | 272.1 | 171 |
+| **WBCD** | r-PCF | 0.9708 | 0.070 | 1 |
+| | VNS-RPCF | 0.9727 | 1.330 | 1 |
+| **Votes** | r-PCF | 0.9719 | 0.109 | 8 |
+| | VNS-RPCF | 0.9719 | 1.516 | 9 |
+| **Breast Cancer** | r-PCF | 0.9922 | 2.404 | 3 |
+| | VNS-RPCF | 1.0000 | 0.019 (Tahmini) | 1 |
+| **Heart** | r-PCF | 1.0000 | 0.490 | 44 |
+| | VNS-RPCF | 1.0000 | 7.185 | 43 |
+| **Blobs 3D** | r-PCF | 1.0000 | 0.009 | 1 |
+| | VNS-RPCF | 1.0000 | 0.300 | 1 |
 
-1. Gerekli kütüphaneleri yükleyin:
+*Not: Süreler donanıma göre değişiklik gösterebilir ancak algoritmalar arası oransal farklar (VNS'in ek maliyeti vb.) tutarlıdır.*
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Temel Bulgular
 
-2. Projeyi çalıştırın:
+1. **VNS Etkisi:** Karmaşık ve gürültülü veri setlerinde (örneğin **Moons**, **Spambase**, **WBCP**), VNS-RPCF en iyi test doğruluğunu elde etmiştir. Bu, yerel aramanın genelleme yeteneğini artırdığını doğrular.
+2. **Eğitim Maliyeti:** VNS-RPCF, standart r-PCF'ye göre daha uzun eğitim sürelerine sahiptir (Tablo 2). Ancak bu maliyet, daha yüksek doğruluk ve genellikle daha az veya benzer sayıda merkez (daha sade model) ile telafi edilmektedir.
+3. **Düzenlileştirme:** r-PCF serisi, düzenlileştirilmemiş PCF'ye göre çoğu durumda daha kararlıdır.
 
-   ```bash
-   python main.py
-   ```
+---
 
-## Proje Dizini Yapısı
+## Kurulum ve Kullanım
 
-```text
-/project_root
-├── main.py                # Ana giriş noktası (Benchmark testlerini yönetir)
-├── pyproject.toml         # Proje ve bağımlılık tanımları (uv)
-├── requirements.txt       # Standart pip gereksinim dosyası
-├── data/                  # İndirilen veri setlerinin geçici deposu
-├── solutions/             # Çıktı klasörü (Sonuç raporları ve grafikler)
-│   ├── moons_results.txt  # Her veri seti için detaylı parametre raporu
-│   └── moons_rpcf.png     # Görselleştirilmiş karar sınırları
-└── src/
-    ├── dataloader.py      # Veri yükleme, temizleme ve ön işleme
-    ├── rpcf.py            # Temel r-PCF algoritma sınıfı
-    ├── vns_rpcf.py        # VNS ile geliştirilmiş r-PCF sınıfı
-    ├── solvers.py         # Gurobi QP alt problem çözücüsü
-    ├── visualizer.py      # 2D grafik çizim fonksiyonları
-    └── utils.py           # Yardımcı raporlama ve kayıt fonksiyonları
+Proje, modern Python paket yöneticisi `uv` ile yapılandırılmıştır.
+
+### Gereksinimler
+
+* Python 3.10+
+* `uv` (Önerilen) veya `pip`
+
+### Çalıştırma
+
+Proje artık modüler bir yapıya sahiptir. İki şekilde çalıştırılabilir:
+
+#### 1. Tam Otomatik (Tek Komut)
+
+Tüm süreci (Grid Search + Benchmark) sırayla çalıştırır.
+
+```bash
+# Varsayılan tüm veri setleri için:
+uv run main.py
+
+# Belirli veri setleri için:
+uv run main.py moons heart
 ```
 
-## Sonuçlar ve Değerlendirme
+#### 2. Adım Adım (Modüler)
 
-Aşağıdaki tablo, farklı veri setleri üzerinde standart **r-PCF** ve **VNS-RPCF** algoritmalarının performans karşılaştırmasını göstermektedir. (Sonuçlar `np.random.seed(42)` ile alınmıştır).
+Süreci parçalara bölerek yönetebilirsiniz.
 
-| Veri Seti | Model | Doğruluk (Accuracy) | Süre (sn) | Fonksiyon Sayısı |
-| :--- | :--- | :--- | :--- | :--- |
-| **Moons** | r-PCF | 0.9833 | 0.0156 | 5 |
-| | **VNS-RPCF** | **1.0000** | 0.3206 | 6 |
-| **Breast Cancer** (Sklearn) | r-PCF | **0.9649** | 0.0971 | 2 |
-| | **VNS-RPCF** | 0.9357 | 1.5493 | 3 |
-| **Blobs 3D** | r-PCF | 1.0000 | 0.0064 | 1 |
-| | **VNS-RPCF** | 1.0000 | 0.1123 | 1 |
-| **WBCD** (Diagnosis) | r-PCF | 0.9357 | 0.123 | 4 |
-| | **VNS-RPCF** | **0.9474** | 1.4736 | 3 |
-| **WBCP** (Prognostic) | r-PCF | 0.7833 | 0.015 | 3 |
-| | **VNS-RPCF** | 0.7833 | 0.2705 | 3 |
-| **Heart** | r-PCF | 0.7692 | 0.0302 | 3 |
-| | **VNS-RPCF** | **0.7802** | 0.3684 | 3 |
-| **Votes** | r-PCF | 0.9618 | 0.0875 | 11 |
-| | **VNS-RPCF** | 0.9618 | 1.0907 | **5** |
-| **Ionosphere** | r-PCF | 0.9151 | 0.1299 | 5 |
-| | **VNS-RPCF** | **0.9528** | 1.5615 | 5 |
-| **Liver** | r-PCF | 0.9038 | 0.1042 | 4 |
-| | **VNS-RPCF** | **0.9615** | 1.5208 | 4 |
+**Adım 1: Hiperparametre Optimizasyonu (Grid Search)**
+En iyi parametreleri (C, lambda, k) bulur ve `solutions/grid_search/` altına `.json` olarak kaydeder.
 
-### Yorumlar
+```bash
+uv run run_grid_search.py moons
+```
 
-1. **Doğruluk Artışı**: `Liver`, `Ionosphere`, `Moons`, `WBCD` ve `Heart` veri setlerinde **VNS-RPCF**, standart yönteme göre daha yüksek doğruluk sağlamıştır. Özellikle `Liver` veri setinde yaklaşık **%6**'lık (0.90 -> 0.96) ve `Ionosphere` setinde **%4**'lük belirgin bir artış görülmüştür.
-2. **Model Sadeliği**: `Votes` veri setinde her iki algoritma aynı doğruluğu (0.9618) yakalamış olsa da, **VNS-RPCF** bu sonuca sadece **5** konik fonksiyon ile ulaşırken, standart r-PCF **11** fonksiyon kullanmıştır. Bu durum, VNS'in daha sade (sparse) ve daha iyi genelleme yapan modeller bulabildiğini gösterir. Aynı şekilde `WBCD` setinde de daha az merkez ile daha yüksek doğruluk elde edilmiştir.
-3. **Süre Maliyeti**: VNS-RPCF, her iterasyonda optimum merkezi bulmak için komşuluk araması yaptığından eğitim süresi standart r-PCF'e göre daha uzundur. Ancak karmaşık problemler ve daha sade modeller için bu maliyet kabul edilebilir düzeydedir.
-4. **Tutarlılık**: `Blobs 3D` ve `WBCP` gibi setlerde her iki algoritma da benzer sonuçlar üretmiştir, bu da VNS'in temel algoritmanın kararlılığını bozmadığını gösterir.
+**Adım 2: Benchmark Testleri**
+Kaydedilen parametreleri okuyarak modelleri (r-PCF, VNS-RPCF, PCF) eğitir ve test eder.
 
-### Sonuç
+```bash
+uv run run_benchmark.py moons
+```
 
-VNS entegrasyonu, hesaplama maliyetini bir miktar artırmakla birlikte, modelin sınıflandırma doğruluğunu artırma (Liver, Ionosphere) ve model karmaşıklığını azaltma (Votes) konularında standart r-PCF'e göre üstünlük sağlamaktadır. Özellikle zorlu ve gürültülü veri setlerinde VNS-RPCF tercih edilmelidir.
+**Ek Analizler:**
+
+```bash
+# Duyarlılık analizi
+uv run python -m src.sensitivity moons
+```
+
+### Sonuçların İncelenmesi
+
+Tüm çıktılar `solutions/` klasöründe düzenli bir yapıda saklanır:
+
+* **`solutions/benchmarks/`**:
+  * `*_results.txt`: Özet rapor (En iyi parametreler, istatistikler, doğruluk skorları).
+  * `*_detailed_results.txt`: Detaylı rapor (Fonksiyon/merkez parametrelerini de içerir).
+  * `*.png`: Karar sınırı grafikleri ve VNS yakınsama grafikleri.
+* **`solutions/grid_search/`**:
+  * `*_best_params.json`: Bulunan optimal parametreler (C, lambda, k).
+  * `*_grid_search.txt`: Grid search detayları.
+* **`solutions/stats/`**: İstatistiksel test sonuçları.
+* **`solutions/sensitivity/`**: Duyarlılık analizi raporları.
+
+---
+
+## Lisans
+
+Bu proje akademik araştırma amaçlı geliştirilmiştir. Tüm hakları saklıdır.

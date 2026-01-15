@@ -6,16 +6,16 @@ import numpy as np
 
 class VNS_RPCF(RPCF):
     """
-    VNS-RPCF: Değişken Komşuluk Araması (Variable Neighborhood Search) ile geliştirilmiş r-PCF.
+    VNS-RPCF: r-PCF enhanced with Variable Neighborhood Search.
 
-    Bu sınıf, rastgele merkez seçim stratejisini bir meta-sezgisel arama (VNS) ile
-    değiştirerek minimal r-PCF algoritmasını genişletir. Her iterasyonda ayırma
-    verimliliğini (çıkarılan A hacmi) maksimize eden optimal bir 'a' merkezi
-    bulmaya çalışır.
+    This class extends the minimal r-PCF algorithm by replacing the random center
+    selection strategy with a meta-heuristic search (VNS). At each iteration, it
+    attempts to find an optimal center 'a' that maximizes separation efficiency
+    (volume of removed A points).
     """
 
     def __init__(
-        self, C=1.0, lamb=0.01, k_neighbors=10, max_vns_iter=5, max_neighbors_check=5
+        self, C=1.0, lamb=0.01, k_neighbors=50, max_vns_iter=5, max_neighbors_check=5
     ):
         super().__init__(C, lamb)
         self.k_neighbors = k_neighbors
@@ -25,20 +25,20 @@ class VNS_RPCF(RPCF):
 
     def select_center(self, candidates_indices):
         """
-        Değişken Komşuluk Araması (VNS) kullanarak en iyi merkezi seçer.
+        Selects the best center using Variable Neighborhood Search (VNS).
         """
-        # candidates_indices, self.A_full içindeki geçerli indekslerin bir listesidir
+        # candidates_indices is a list of valid indices within self.A_full
 
-        # 1. Rastgele bir aday ile başla
+        # 1. Start with a random candidate
         current_best_idx = np.random.choice(candidates_indices)
         current_best_score = -np.inf
 
         step_history = []
 
-        # MEVCUT adaylar üzerinde yerel arama uzayı için NN oluştur
+        # Build NN on CURRENT candidates for local search space
         candidate_data = self.A_full[candidates_indices]
 
-        # Aday sayısına bağlı güvenlik kontrolü
+        # Safety check based on candidate count
         curr_k = min(self.k_neighbors, len(candidates_indices))
         if curr_k < 1:
             self.all_vns_histories.append([0])
@@ -46,10 +46,10 @@ class VNS_RPCF(RPCF):
 
         nbrs_model = NearestNeighbors(n_neighbors=curr_k).fit(candidate_data)
 
-        # Performansı değerlendirmek için B'ye erişmemiz gerekiyor
+        # We need access to B to evaluate performance
         current_B_indices = getattr(self, "current_B_indices", [])
 
-        # Sezgisel döngü
+        # Heuristic loop
         for vns_step in range(self.max_vns_iter):
             # Record current best score at start of step (or end?)
             # Initial score calculation is expensive if we haven't computed it yet.
@@ -59,16 +59,16 @@ class VNS_RPCF(RPCF):
             # Let's assume score starts low.
 
             try:
-                # candidates_indices listesindeki pozisyonu bul
+                # Find position in candidates_indices list
                 internal_idx = candidates_indices.index(current_best_idx)
             except ValueError:
                 break
 
-            # Komşuları al (candidate_data içindeki indeksler)
+            # Get neighbors (indices within candidate_data)
             distances, indices = nbrs_model.kneighbors([candidate_data[internal_idx]])
             neighbor_internal_indices = indices[0]
 
-            # Komşuları kontrol et
+            # Check neighbors
             improved = False
             checked_count = 0
             for n_int_idx in neighbor_internal_indices:
@@ -78,14 +78,14 @@ class VNS_RPCF(RPCF):
 
                 n_full_idx = candidates_indices[n_int_idx]
 
-                # Bu komşuyu test edip etmeyeceğimizi doğrula (mevcut ile aynıysa atla)
+                # Validate whether to test this neighbor (skip if same as current)
                 if n_full_idx == current_best_idx and vns_step > 0:
                     continue
 
-                # QP'yi çöz
+                # Solve QP
                 center_candidate = self.A_full[n_full_idx]
 
-                # QP'yi çöz
+                # Solve QP
                 params = solve_subproblem_qk(
                     candidates_indices,
                     current_B_indices,
@@ -95,11 +95,12 @@ class VNS_RPCF(RPCF):
                     self.C,
                     self.lamb,
                 )
+                self.num_solved_subproblems += 1
 
                 if params is None:
                     continue
 
-                # Verimliliği Hesapla (Kesilen Hacim)
+                # Compute Efficiency (Removed Volume)
                 g_vals = self._evaluate_g(
                     self.A_full[candidates_indices],
                     params["w"],
@@ -108,7 +109,7 @@ class VNS_RPCF(RPCF):
                     center_candidate,
                 )
 
-                # Doğru sınıflandırılmış A (çıkarılanlar), g(a) <= 0 olanlardır
+                # Correctly classified A (removed) are those with g(a) <= 0
                 removed_count = np.sum(g_vals <= 0)
                 score = removed_count
 
@@ -116,7 +117,7 @@ class VNS_RPCF(RPCF):
                     current_best_score = score
                     current_best_idx = n_full_idx
                     improved = True
-                    # İlk İyileştirme
+                    # First Improvement
                     break
 
             # Record history after looking at neighbors
@@ -127,7 +128,7 @@ class VNS_RPCF(RPCF):
             step_history.append(valid_score)
 
             if not improved:
-                # Çalkalama (Shaking): Rastgele başka bir adaya atla
+                # Shaking: Jump to another random candidate
                 idx_rand = np.random.choice(len(candidates_indices))
                 current_best_idx = candidates_indices[idx_rand]
                 # Reset score? Usually VNS keeps best found globally or restarts?

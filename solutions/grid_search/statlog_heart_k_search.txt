@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: statlog_heart ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.8704
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.8704
+50         0.8519
+20         0.7963
+30         0.7963
+10         0.7778
+75         0.7778
+100        0.7778

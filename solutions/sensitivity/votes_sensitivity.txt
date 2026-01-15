@@ -1,0 +1,21 @@
+=== Sensitivity Analysis Results: votes ===
+
+Parameter: k_neighbors (VNS neighborhood size)
+Tested values: [5, 10, 20, 30, 50, 75, 100]
+
+Best k: 20 (Test Accuracy: 0.9540)
+
+--- Summary ---
+Accuracy Range: [0.9354, 0.9540]
+Time Range:     [4.6102s, 5.0563s]
+
+--- Detailed Results ---
+k      Train Acc    Test Acc     Train Time   Test Time    Centers    Solved  
+------------------------------------------------------------------------
+5      0.9826       0.9471       4.6677       0.0000       3.50       48.10   
+10     0.9842       0.9380       4.9475       0.0000       3.90       53.40   
+20     0.9839       0.9540       4.6608       0.0000       3.80       53.40   
+30     0.9821       0.9425       5.0563       0.0000       3.10       49.90   
+50     0.9834       0.9354       4.8311       0.0000       3.60       50.50   
+75     0.9834       0.9355       4.6102       0.0000       3.20       48.30   
+100    0.9837       0.9427       4.6133       0.0000       3.50       50.80   

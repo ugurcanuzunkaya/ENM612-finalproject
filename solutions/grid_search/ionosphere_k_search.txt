@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: ionosphere ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.9014
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.9014
+20         0.9014
+30         0.9014
+75         0.9014
+10         0.8873
+50         0.8873
+100        0.8732

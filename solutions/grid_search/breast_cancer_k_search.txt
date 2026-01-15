@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: breast_cancer ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.9912
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.9912
+75         0.9825
+20         0.9737
+30         0.9737
+100        0.9737
+10         0.9649
+50         0.9649

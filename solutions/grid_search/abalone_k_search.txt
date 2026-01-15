@@ -1,0 +1,16 @@
+=== k_neighbors Search Results: abalone ===
+
+Best k_neighbors: 5
+Best Accuracy: 0.7787
+
+All Results:
+------------------------------
+k          Accuracy  
+------------------------------
+5          0.7787
+10         0.7775
+75         0.7775
+20         0.7739
+30         0.7703
+50         0.7691
+100        0.7632

@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: LIVER
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.9572     0.0283     0.8857     1.0000     50
+VNS-RPCF        0.9496     0.0280     0.8571     1.0000     50
+PCF             0.9549     0.0282     0.8571     1.0000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=141.0, p=0.095635
+   t-test:   stat=1.5322, p=0.131907
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=210.0, p=0.870271
+   t-test:   stat=0.4462, p=0.657444
+   Result:   NOT SIGNIFICANT
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=118.5, p=0.232049
+   t-test:   stat=-1.0274, p=0.309263
+   Result:   NOT SIGNIFICANT
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 0

@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: IONOSPHERE
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.9242     0.0385     0.8571     1.0000     50
+VNS-RPCF        0.9191     0.0371     0.8286     1.0000     50
+PCF             0.8592     0.0473     0.7714     0.9714     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=359.5, p=0.663988
+   t-test:   stat=0.8087, p=0.422590
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=59.5, p=0.000000
+   t-test:   stat=8.3916, p=0.000000
+   Result:   SIGNIFICANT (Winner: RPCF)
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=38.0, p=0.000000
+   t-test:   stat=7.9007, p=0.000000
+   Result:   SIGNIFICANT (Winner: VNS-RPCF)
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 2

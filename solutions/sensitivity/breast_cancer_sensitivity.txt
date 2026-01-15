@@ -1,0 +1,21 @@
+=== Sensitivity Analysis Results: breast_cancer ===
+
+Parameter: k_neighbors (VNS neighborhood size)
+Tested values: [5, 10, 20, 30, 50, 75, 100]
+
+Best k: 10 (Test Accuracy: 0.9631)
+
+--- Summary ---
+Accuracy Range: [0.9509, 0.9631]
+Time Range:     [4.9713s, 10.1764s]
+
+--- Detailed Results ---
+k      Train Acc    Test Acc     Train Time   Test Time    Centers    Solved  
+------------------------------------------------------------------------
+5      0.9932       0.9561       9.2762       0.0000       3.00       37.40   
+10     0.9900       0.9631       10.1764      0.0000       2.80       39.60   
+20     0.9918       0.9561       9.4942       0.0000       2.90       39.00   
+30     0.9924       0.9579       9.4947       0.0000       2.80       38.80   
+50     0.9936       0.9579       5.8902       0.0000       2.90       37.30   
+75     0.9922       0.9509       5.2745       0.0000       2.90       38.90   
+100    0.9926       0.9578       4.9713       0.0000       2.90       36.90   

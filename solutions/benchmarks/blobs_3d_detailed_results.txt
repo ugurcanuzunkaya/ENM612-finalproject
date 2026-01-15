@@ -1,0 +1,108 @@
+============================================================
+         DETAILED REPORT FOR DATASET: BLOBS_3D
+============================================================
+
+==================================================
+           BEST HYPERPARAMETERS (Grid Search)
+==================================================
+
+  RPCF / VNS-RPCF:
+    C (Misclassification Penalty): 0.001
+    Lambda (Regularization):       0.001
+    k_neighbors (VNS):             5
+
+==================================================
+           OVERALL STATISTICS (All Seeds & Folds)
+==================================================
+
+Model      Mean Test  Std Test  Mean Train  Mean Time  Mean Centers
+--------------------------------------------------------------------
+RPCF       1.0000     0.0000    1.0000      0.0087     1.0         
+VNS-RPCF   1.0000     0.0000    1.0000      0.1615     1.0         
+PCF        1.0000     0.0000    1.0000      0.0035     1.0         
+
+==================================================
+           STATISTICAL SIGNIFICANCE TESTS
+==================================================
+
+Comparison                p-value      Result               Winner              
+-----------------------------------------------------------------------------
+RPCF vs VNS-RPCF          1.000000     NOT SIG.             No significant dif  
+RPCF vs PCF               1.000000     NOT SIG.             No significant dif  
+VNS-RPCF vs PCF           1.000000     NOT SIG.             No significant dif  
+
+  Primary Comparison: RPCF vs VNS-RPCF
+
+  Wilcoxon Signed-Rank Test:
+    Statistic: 0
+    p-value:   1.000000
+
+  Paired t-test:
+    Statistic: nan
+    p-value:   nan
+
+  Significance (alpha=0.05): NOT SIGNIFICANT
+  Winner: No significant difference
+
+==================================================
+           DETAILED RESULTS (Last Run Example)
+==================================================
+
+--- Standard RPCF ---
+Training Time:       0.0082 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  1
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [-0.87595284  1.10792999  1.0007018 ]
+    Weight (w): [-0.00198999 -0.25096676 -0.18073144]
+    Xi: 0.240223
+    Gamma: 1.356733
+    QP Objective: 0.0020782477310741427
+
+------------------------------
+
+--- VNS-RPCF ---
+Training Time:       0.1583 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  18
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [-1.54051233  1.0889135   1.34456911]
+    Weight (w): [-0.04807482 -0.20614911 -0.06255538]
+    Xi: 0.218215
+    Gamma: 1.452426
+    QP Objective: 0.0026989698089221054
+
+------------------------------
+
+--- Original PCF ---
+Training Time:       0.0033 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       1.0000
+Functions (Centers): 1
+Solved Subproblems:  1
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [-0.75722878  0.9872745   1.09311657]
+    Weight (w): [ 0.40830359 -0.83185405 -0.17808638]
+    Xi: 0.000000
+    Gamma: 1.275612
+    QP Objective: 0.0
+
+------------------------------
+
+
+============================================================
+                     END OF REPORT
+============================================================

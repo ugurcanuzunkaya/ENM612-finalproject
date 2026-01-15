@@ -5,23 +5,23 @@ import numpy as np
 
 def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb):
     """
-    Belirli bir merkez için QP alt problemini çözer.
+    Solves the QP subproblem for a given center.
 
     Args:
-        A_indices: A Kümesi (Sınıf -1) için mevcut aktif indeksler
-        B_indices: B Kümesi (Sınıf +1) için mevcut aktif indeksler
-        A_full: Tam veri seti A (Class -1)
-        B_full: Tam veri seti B (Class +1)
-        center_a: Seçilen merkez noktası (A'dan)
-        C: Hatalı sınıflandırma cezası için hiperparametre
-        lamb: Düzenlileştirme (regularization) için hiperparametre
+        A_indices: Current active indices for Set A (Class -1)
+        B_indices: Current active indices for Set B (Class +1)
+        A_full: Full dataset A (Class -1)
+        B_full: Full dataset B (Class +1)
+        center_a: Selected center point (from A)
+        C: Hyperparameter for misclassification penalty
+        lamb: Hyperparameter for regularization
 
     Returns:
-        Optimal parametreler w, xi, gamma, obj içeren sözlük veya başarısız olursa None.
+        Dictionary containing optimal parameters w, xi, gamma, obj, or None if failed.
     """
     m_sub = len(A_indices)
     p_sub = len(B_indices)
-    # A boşsa dururuz (A Kümesi tamamen kapsanmıştır).
+    # Stop if A is empty (Set A is fully covered)
     if m_sub == 0:
         return None
 
@@ -40,8 +40,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
         if p_sub > 0:
             z_slack = model.addVars(p_sub, lb=0.0, name="z")
 
-        # Kısıt 1: A'daki x için g(x) >= 0 (slack ile formülasyonda kesinlikle > -1)
-        # Resmi olarak: g(a_i) + 1 <= y_i  --> y_i > 0 ise yanlış sınıflandırılmış
+        # Constraint 1: For x in A, g(x) >= 0 (strictly > -1 in formulation with slack)
+        # Formally: g(a_i) + 1 <= y_i  --> y_i > 0 if misclassified
         for idx_enum, original_idx in enumerate(A_indices):
             point = A_full[original_idx]
             diff = point - center_a
@@ -52,8 +52,8 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
             l1_norm = np.sum(np.abs(diff))
             model.addConstr(term1 + l1_norm * xi - gamma + 1 <= y_slack[idx_enum])
 
-        # Kısıt 2: B'deki x için g(x) <= 0 (kesinlikle < 1)
-        # Resmi olarak: -g(b_j) + 1 <= z_j --> z_j > 0 ise yanlış sınıflandırılmış
+        # Constraint 2: For x in B, g(x) <= 0 (strictly < 1)
+        # Formally: -g(b_j) + 1 <= z_j --> z_j > 0 if misclassified
         if p_sub > 0:
             for idx_enum, original_idx in enumerate(B_indices):
                 point = B_full[original_idx]
@@ -67,12 +67,12 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
                     -1 * term1 - l1_norm * xi + gamma + 1 <= z_slack[idx_enum]
                 )
 
-        # Amaç: Min lambda*(||w||^2 + xi^2 + gamma^2) + 1/m * sum(y) + C/p * sum(z)
-        # Düzenlileştirme terimini ve ağırlıklı sınıflandırma hatalarını minimize ediyoruz.
+        # Objective: Min lambda*(||w||^2 + xi^2 + gamma^2) + 1/m * sum(y) + C/p * sum(z)
+        # Minimize regularization term and weighted classification errors.
         w_sq = gp.quicksum(w[j] * w[j] for j in range(n_features))
         reg_term = w_sq + xi * xi + gamma * gamma
 
-        # Normalizasyon Ağırlıkları (A için 1/m, B için C/p)
+        # Normalization Weights (1/m for A, C/p for B)
         weight_A = 1.0 / m_sub if m_sub > 0 else 0.0
         weight_B = C / p_sub if p_sub > 0 else 0.0
 
@@ -96,4 +96,88 @@ def solve_subproblem_qk(A_indices, B_indices, A_full, B_full, center_a, C, lamb)
 
     except gp.GurobiError as e:
         print(f"Gurobi Error: {e}")
+        return None
+
+
+def solve_subproblem_pk(A_indices, B_indices, A_full, B_full, center_a):
+    """
+    Solves the Original PCF (Ck) QP subproblem for a given center.
+    Differences: No slack variable (z) for B (Set B must be strictly separated).
+                 No regularization (lambda=0 assumed but not in formulation).
+
+    Args:
+        A_indices: Current active indices for Set A (Class -1)
+        B_indices: Current active indices for Set B (Class +1)
+        A_full: Full dataset A (Class -1)
+        B_full: Full dataset B (Class +1)
+        center_a: Selected center point (from A)
+
+    Returns:
+        Dictionary containing optimal parameters w, xi, gamma, obj, or None if failed.
+    """
+    m_sub = len(A_indices)
+    p_sub = len(
+        B_indices
+    )  # Original PCF works with all B usually, but here we take indices
+    # Note: In original PCF, B is never pruned, so B_indices should be full usually.
+
+    if m_sub == 0:
+        return None
+
+    n_features = A_full.shape[1]
+
+    try:
+        model = gp.Model("P_k")
+        model.setParam("OutputFlag", 0)
+
+        # Variables
+        w = model.addVars(n_features, lb=-GRB.INFINITY, name="w")
+        xi = model.addVar(lb=0.0, name="xi")
+        gamma = model.addVar(lb=1.0, name="gamma")
+        y_slack = model.addVars(m_sub, lb=0.0, name="y")
+
+        # Constraint 1: For x in A, g(x) >= 0 (with slack g(x) >= -1 but depends on formulation)
+        # Original Paper (Eq 4b): g(a) + 1 <= y_i
+        for idx_enum, original_idx in enumerate(A_indices):
+            point = A_full[original_idx]
+            diff = point - center_a
+
+            term1 = gp.LinExpr()
+            term1.addTerms(diff, [w[j] for j in range(n_features)])
+
+            l1_norm = np.sum(np.abs(diff))
+            model.addConstr(term1 + l1_norm * xi - gamma + 1 <= y_slack[idx_enum])
+
+        # Constraint 2: For x in B, g(x) must not be <= 0. g(x) > 0 required.
+        # Original Paper (Eq 4c): -g(b) + 1 <= 0  =>  g(b) >= 1 (HARD CONSTRAINT)
+        if p_sub > 0:
+            for idx_enum, original_idx in enumerate(B_indices):
+                point = B_full[original_idx]
+                diff = point - center_a
+
+                term1 = gp.LinExpr()
+                term1.addTerms(diff, [w[j] for j in range(n_features)])
+
+                l1_norm = np.sum(np.abs(diff))
+                # -1 * (term1 + l1*xi - gamma) + 1 <= 0
+                model.addConstr(-1 * term1 - l1_norm * xi + gamma + 1 <= 0)
+
+        # Objective: Min sum(y_i)
+        obj = gp.quicksum(y_slack)
+        model.setObjective(obj, GRB.MINIMIZE)
+
+        model.optimize()
+
+        if model.status == GRB.OPTIMAL:
+            return {
+                "w": np.array([w[j].X for j in range(n_features)]),
+                "xi": xi.X,
+                "gamma": gamma.X,
+                "obj": model.ObjVal,
+            }
+        else:
+            return None
+
+    except gp.GurobiError as e:
+        print(f"Gurobi Error (PCF): {e}")
         return None

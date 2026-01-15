@@ -1,0 +1,21 @@
+=== Sensitivity Analysis Results: moons ===
+
+Parameter: k_neighbors (VNS neighborhood size)
+Tested values: [5, 10, 20, 30, 50, 75, 100]
+
+Best k: 5 (Test Accuracy: 0.9900)
+
+--- Summary ---
+Accuracy Range: [0.9750, 0.9900]
+Time Range:     [0.5284s, 0.7884s]
+
+--- Detailed Results ---
+k      Train Acc    Test Acc     Train Time   Test Time    Centers    Solved  
+------------------------------------------------------------------------
+5      0.9828       0.9900       0.5958       0.0000       4.80       67.10   
+10     0.9883       0.9800       0.5284       0.0000       4.00       54.10   
+20     0.9894       0.9900       0.6454       0.0000       4.30       61.30   
+30     0.9856       0.9750       0.5340       0.0000       3.80       51.80   
+50     0.9894       0.9850       0.5684       0.0000       3.60       51.10   
+75     0.9900       0.9900       0.6262       0.0000       4.50       63.80   
+100    0.9889       0.9750       0.7884       0.0000       4.00       55.90   

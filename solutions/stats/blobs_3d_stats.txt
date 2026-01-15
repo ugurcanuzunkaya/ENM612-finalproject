@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: BLOBS_3D
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            1.0000     0.0000     1.0000     1.0000     50
+VNS-RPCF        1.0000     0.0000     1.0000     1.0000     50
+PCF             1.0000     0.0000     1.0000     1.0000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=0, p=1.000000
+   t-test:   stat=nan, p=nan
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=0, p=1.000000
+   t-test:   stat=nan, p=nan
+   Result:   NOT SIGNIFICANT
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=0, p=1.000000
+   t-test:   stat=nan, p=nan
+   Result:   NOT SIGNIFICANT
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 0

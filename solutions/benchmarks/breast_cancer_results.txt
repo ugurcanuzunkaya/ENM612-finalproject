@@ -1,0 +1,81 @@
+============================================================
+         REPORT FOR DATASET: BREAST_CANCER
+============================================================
+
+==================================================
+           BEST HYPERPARAMETERS (Grid Search)
+==================================================
+
+  RPCF / VNS-RPCF:
+    C (Misclassification Penalty): 10
+    Lambda (Regularization):       0.001
+    k_neighbors (VNS):             5
+
+==================================================
+           OVERALL STATISTICS (All Seeds & Folds)
+==================================================
+
+Model      Mean Test  Std Test  Mean Train  Mean Time  Mean Centers
+--------------------------------------------------------------------
+RPCF       0.9550     0.0290    0.9979      0.6646     2.1         
+VNS-RPCF   0.9596     0.0258    0.9980      9.6900     2.0         
+PCF        0.9424     0.0293    1.0000      0.0244     1.0         
+
+==================================================
+           STATISTICAL SIGNIFICANCE TESTS
+==================================================
+
+Comparison                p-value      Result               Winner              
+-----------------------------------------------------------------------------
+RPCF vs VNS-RPCF          0.093912     NOT SIG.             No significant dif  
+RPCF vs PCF               0.012115     SIGNIFICANT          RPCF                
+VNS-RPCF vs PCF           0.000423     SIGNIFICANT          VNS-RPCF            
+
+  Primary Comparison: RPCF vs VNS-RPCF
+
+  Wilcoxon Signed-Rank Test:
+    Statistic: 175.5
+    p-value:   0.093912
+
+  Paired t-test:
+    Statistic: -1.4569
+    p-value:   0.151510
+
+  Significance (alpha=0.05): NOT SIGNIFICANT
+  Winner: No significant difference
+
+==================================================
+           DETAILED RESULTS (Last Run Example)
+==================================================
+
+--- Standard RPCF ---
+Training Time:       0.5319 s
+Test Time:           0.0000 s
+Training Accuracy:   0.9981
+Test Accuracy:       0.9821
+Functions (Centers): 2
+Solved Subproblems:  2
+------------------------------
+
+--- VNS-RPCF ---
+Training Time:       6.8397 s
+Test Time:           0.0000 s
+Training Accuracy:   0.9981
+Test Accuracy:       0.9821
+Functions (Centers): 2
+Solved Subproblems:  28
+------------------------------
+
+--- Original PCF ---
+Training Time:       0.0248 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       0.9821
+Functions (Centers): 1
+Solved Subproblems:  1
+------------------------------
+
+
+============================================================
+                     END OF REPORT
+============================================================

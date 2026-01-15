@@ -1,0 +1,33 @@
+============================================================
+    STATISTICAL SIGNIFICANCE TEST RESULTS: VOTES
+============================================================
+
+--- DESCRIPTIVE STATISTICS ---
+
+Model           Mean       Std        Min        Max        N    
+------------------------------------------------------------
+RPCF            0.9430     0.0344     0.8636     1.0000     50
+VNS-RPCF        0.9472     0.0322     0.8605     1.0000     50
+PCF             0.9320     0.0332     0.8636     1.0000     50
+
+--- PAIRWISE STATISTICAL COMPARISONS ---
+
+>> RPCF vs VNS-RPCF
+   Wilcoxon: stat=140.0, p=0.363593
+   t-test:   stat=-1.3783, p=0.174379
+   Result:   NOT SIGNIFICANT
+
+>> RPCF vs PCF
+   Wilcoxon: stat=120.0, p=0.020427
+   t-test:   stat=2.3992, p=0.020280
+   Result:   SIGNIFICANT (Winner: RPCF)
+
+>> VNS-RPCF vs PCF
+   Wilcoxon: stat=131.5, p=0.004470
+   t-test:   stat=3.4168, p=0.001283
+   Result:   SIGNIFICANT (Winner: VNS-RPCF)
+
+--- SUMMARY ---
+
+Total comparisons: 3
+Significant differences: 2

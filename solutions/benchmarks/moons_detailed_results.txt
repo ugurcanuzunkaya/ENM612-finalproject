@@ -1,0 +1,185 @@
+============================================================
+         DETAILED REPORT FOR DATASET: MOONS
+============================================================
+
+==================================================
+           BEST HYPERPARAMETERS (Grid Search)
+==================================================
+
+  RPCF / VNS-RPCF:
+    C (Misclassification Penalty): 10
+    Lambda (Regularization):       0.001
+    k_neighbors (VNS):             5
+
+==================================================
+           OVERALL STATISTICS (All Seeds & Folds)
+==================================================
+
+Model      Mean Test  Std Test  Mean Train  Mean Time  Mean Centers
+--------------------------------------------------------------------
+RPCF       0.9810     0.0298    0.9877      0.0221     4.2         
+VNS-RPCF   0.9760     0.0335    0.9850      0.3620     4.0         
+PCF        0.9710     0.0318    1.0000      0.0156     7.2         
+
+==================================================
+           STATISTICAL SIGNIFICANCE TESTS
+==================================================
+
+Comparison                p-value      Result               Winner              
+-----------------------------------------------------------------------------
+RPCF vs VNS-RPCF          0.346241     NOT SIG.             No significant dif  
+RPCF vs PCF               0.043461     SIGNIFICANT          RPCF                
+VNS-RPCF vs PCF           0.411315     NOT SIG.             No significant dif  
+
+  Primary Comparison: RPCF vs VNS-RPCF
+
+  Wilcoxon Signed-Rank Test:
+    Statistic: 72.5
+    p-value:   0.346241
+
+  Paired t-test:
+    Statistic: 0.8963
+    p-value:   0.374497
+
+  Significance (alpha=0.05): NOT SIGNIFICANT
+  Winner: No significant difference
+
+==================================================
+           DETAILED RESULTS (Last Run Example)
+==================================================
+
+--- Standard RPCF ---
+Training Time:       0.0211 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       0.9500
+Functions (Centers): 3
+Solved Subproblems:  3
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [ 0.6592403  -0.05545195]
+    Weight (w): [ 1.44940531 -5.23469878]
+    Xi: 3.410808
+    Gamma: 1.000000
+    QP Objective: 1.9181682228557204
+
+  Function 2:
+    Center: [-1.49172532  0.38443142]
+    Weight (w): [ 2.07145358 -0.61349062]
+    Xi: 0.000000
+    Gamma: 1.083995
+    QP Objective: 1.0889075751026074
+
+  Function 3:
+    Center: [ 0.3474203  -0.66475946]
+    Weight (w): [-2.36028241 -4.36920049]
+    Xi: 5.581928
+    Gamma: 2.388794
+    QP Objective: 0.061525108331115394
+
+------------------------------
+
+--- VNS-RPCF ---
+Training Time:       0.3108 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       0.9500
+Functions (Centers): 4
+Solved Subproblems:  51
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [-0.69127367  1.39309058]
+    Weight (w): [ 0.70570257 -2.38146473]
+    Xi: 0.000000
+    Gamma: 2.063431
+    QP Objective: 1.1492373223442716
+
+  Function 2:
+    Center: [-1.78521916 -0.41067966]
+    Weight (w): [ 0.3613074  -0.67298349]
+    Xi: 1.007450
+    Gamma: 1.000000
+    QP Objective: 2.627520430112316
+
+  Function 3:
+    Center: [ 0.51988695 -0.39278312]
+    Weight (w): [-0.17619545 -3.82100792]
+    Xi: 3.645890
+    Gamma: 1.719922
+    QP Objective: 0.4305650817991266
+
+  Function 4:
+    Center: [ 0.41881935 -0.73649502]
+    Weight (w): [-1.56572196 -6.64440869]
+    Xi: 6.695866
+    Gamma: 2.709818
+    QP Objective: 0.09877739111816079
+
+------------------------------
+
+--- Original PCF ---
+Training Time:       0.0157 s
+Test Time:           0.0000 s
+Training Accuracy:   1.0000
+Test Accuracy:       0.9000
+Functions (Centers): 7
+Solved Subproblems:  7
+
+Model Parameters (Functions):
+  Function 1:
+    Center: [-0.85590503  1.43580751]
+    Weight (w): [ 0.8896652  -2.54019283]
+    Xi: 0.000000
+    Gamma: 1.933138
+    QP Objective: 126.05056630465194
+
+  Function 2:
+    Center: [0.54810215 0.34803033]
+    Weight (w): [-0.17432352  0.17723563]
+    Xi: 1.762704
+    Gamma: 1.000000
+    QP Objective: 91.69770715666338
+
+  Function 3:
+    Center: [-1.59916179 -0.72017978]
+    Weight (w): [2.54478172 0.68054307]
+    Xi: 0.000000
+    Gamma: 1.000000
+    QP Objective: 98.0426074694101
+
+  Function 4:
+    Center: [ 0.41881935 -0.73649502]
+    Weight (w): [-1.04183733 -5.10888849]
+    Xi: 4.345240
+    Gamma: 1.000000
+    QP Objective: 31.357787259752012
+
+  Function 5:
+    Center: [-1.35969056  0.24877242]
+    Weight (w): [ 2.82437916 -2.37106842]
+    Xi: 0.000000
+    Gamma: 1.000000
+    QP Objective: 11.113762562738206
+
+  Function 6:
+    Center: [-0.1451575   0.72311664]
+    Weight (w): [-3.19231697  2.53544002]
+    Xi: 4.510042
+    Gamma: 1.000000
+    QP Objective: 3.9392965260404607
+
+  Function 7:
+    Center: [ 0.75147607 -0.67350921]
+    Weight (w): [-12.79244687  27.85640888]
+    Xi: 29.536815
+    Gamma: 1.000000
+    QP Objective: 0.0
+
+------------------------------
+
+
+============================================================
+                     END OF REPORT
+============================================================
